@@ -118,20 +118,13 @@ if (single) {
 // Prepare output, depending on if a file or a folder has been given
 if (cmdConf.output) {
 	let parse = path.parse(cmdConf.output);
-	conf.scadOutputName = parse.base;
+	if (parse.base) {
+		conf.scadOutputName = parse.base;
+	}
 	conf.scadOutputDir = parse.dir;
 } else {
 	conf.scadOutputDir = path.join(process.cwd(), 'previews');
 }
-
-
-// let parse = path.parse(cmdConf.output);
-// if (parse.ext && parse.dir) {
-// 	conf.scadOutputName = parse.base;
-// 	conf.scadOutputDir = parse.dir;
-// } else {
-// 	conf.scadOutputDir = cmdConf.output || path.join(process.cwd(), 'output');
-// }
 
 // Create folders for output
 fs.mkdirSync(conf.scadOutputDir, { recursive: true });
