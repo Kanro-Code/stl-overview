@@ -1,6 +1,6 @@
 {
-  "name": "3d-print-thumbnailer",
-  "version": "1.0.0",
+  "name": "stl-overview",
+  "version": "0.0.3",
   "description": "",
   "main": "index.js",
   "scripts": {
@@ -16,5 +16,9 @@
   },
   "bin": {
     "stl-overview": "./index.js"
-  }
+  },
+  "files": [
+    "lib",
+    "index.js"
+  ]
 }
