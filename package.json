@@ -4,7 +4,8 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "electron ./src/electron/index.js"
   },
   "author": "",
   "license": "ISC",
@@ -12,6 +13,7 @@
     "async": "^3.2.0",
     "command-line-args": "^5.1.1",
     "command-line-usage": "^6.1.0",
+    "electron": "^10.0.1",
     "jimp": "^0.16.0"
   },
   "bin": {

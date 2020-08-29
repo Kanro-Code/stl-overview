@@ -1,7 +1,3 @@
-#!/usr/bin/env node
-
-const [,, ... args] = process.argv
-
 const fs = require('fs');
 const path = require('path');
 const async = require('async');
