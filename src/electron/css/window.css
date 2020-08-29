@@ -1,16 +1,15 @@
 body {
-  background-image: url("../img/star-sky.jpg");
-  background-position: center;
-  background-size: cover;
-  background-repeat: no-repeat;
-  background-attachment: fixed; /* <= This one */
+	background-image: url("../img/download (2).png");
+	background-position: center;
+	background-size: cover;
+	background-repeat: no-repeat;
+	background-attachment: fixed; /* <= This one */
 }
 
 .container-mid {
-
-  display: flex;
-  flex-direction: row;
-  justify-content: space-between;
+	display: flex;
+	flex-direction: row;
+	justify-content: space-between;
 }
 
 .spacer {
@@ -18,71 +17,88 @@ body {
 }
 
 .main {
-  background-color: #1e2833;
-  margin-top: 15px; 
-  margin-bottom: 15px;
-  border-radius: 4px;
-  box-shadow: 7px 7px 4px rgba(0,0,0,0.2);
-  width: 800px;
-  max-width: 800px;
+	background-color: #1e2833;
+	margin-top: 15px; 
+	margin-bottom: 15px;
+	border-radius: 4px;
+	box-shadow: 7px 7px 4px rgba(0,0,0,0.2);
+	width: 800px;
+	max-width: 800px;
 }
 
-.dropzone {
-  height: 200px;
-  width: 85%;
-  margin: 50px auto 0 auto;
-  box-shadow: 0 5px 15px 0 rgba(0,0,0,0.5);
-  border-radius: 6px;
+.f-input {
+	margin: 50px auto 0 auto;
+	box-shadow: 0 5px 15px 0 rgba(0,0,0,0.5);
+	width: 85%;
+	border-radius: 5px;
+}
+.f-input-content {
+	height: 250px;
+	position: relative;
+	background: linear-gradient(49deg, rgba(34,195,99,0.4) 0%, rgba(253,187,45,0.5) 100%);
+	justify-content: center;
+	z-index: 2;
 }
 
-.dropzone.dragging {
-  border: 3px dashed rgba(00,255,0,0.8);
+.f-input-border {
+	width: 400px;
+	height: 100px;
+	top: 75px;
+	left: 0;
+	right: 0;
+	position: absolute;
+	border: 3px dashed rgba(113,151,191,0.8);
+	margin: 0 auto;
+	line-height: 30px;
+	pointer-events: none;
 }
 
-.dropzone-background {
-  background: rgb(34,195,99);
-  background: linear-gradient(49deg, rgba(34,195,99,0.4) 0%, rgba(253,187,45,0.5) 100%);
-  width: 100%;
-  height: 100%;
-  top: 0;
-  left: 0;
-  pointer-events: none;
-  z-index: 1;
-  position: relative;
+.dragging .f-input-border {
+	border: 3px dashed rgba(30,40,50,0.8);
 }
 
-.dropzone-label {
-  position: relative;
-  top: 90px;
-  color: rgb(244,255,244);
-  text-align: center;
-  font-weight: 700;
-  letter-spacing: 0.03em;
-  pointer-events: none;
+.f-input-label {
+	position: absolute;
+	top: 110px;
+	left: 0;
+	right: 0;
+	color: rgb(244,255,244);
+	text-align: center;
+	font-weight: 700;
+	letter-spacing: 0.03em;
+	pointer-events: none;
 }
 
-.dropzone-indicator {
-  border: 3px dashed rgba(244,255,244,0.8);
-  width: 400px;
-  height: 100px;
-  margin: 0 auto;
+.dragging .f-input-label {
+	font-weight: 900;
+	color: rgba(128,128,128,0.8);
 }
 
+.f-input-bg {
+	/* background: linear-gradient(49deg, rgba(34,195,99,0.4) 0%, rgba(253,187,45,0.5) 100%); */
+	height: 100%;
+	width: 100%;
+	top: 0;
+	left: 0;
+	position: absolute;
+	z-index: 1;
+}
 
-
+/* ---------- */
 .file-container {
-  width: 85%;
-  /* min-height: 100px; */
-  background: rgb(244,255,244);
-  margin: 0 auto;
+	padding-top: 15px;
+	width: 85%;
+	/* min-height: 100px; */
+	background: rgb(244,255,244);
+	margin: 15px auto 0 auto;
 }
 
 .file {
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	white-space: nowrap;
 }
 
 #map_outer svg path {
-  d: path('M 850 300 C 850 300 350 300 350 300 L 348.1 205.39 L 120 400.39 L 348.1 606.19 L 350 500 C 850 500 850 500 850 500 z') !important;
+	d: path('M 850 300 C 850 300 350 300 350 300 L 348.1 205.39 L 120 400.39 L 348.1 606.19 L 350 500 C 850 500 850 500 850 500 z') !important;
 }
