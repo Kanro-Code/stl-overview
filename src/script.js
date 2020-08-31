@@ -6,31 +6,6 @@ const Stl = require('./lib/stl');
 const Openscad = require('./lib/openscad');
 const Stitch = require('./lib/stitch');
 
-// const commandLineUsage = require('command-line-usage');
-
-// const sections = [
-//   {
-//     header: 'Stl Image Overview',
-//     content: 'Scan through a folder filled with Stl files and generate an image of what is present.'
-//   },
-//   {
-//     header: 'Options',
-//     optionList: [
-//       {
-//         name: 'input',
-//         typeLabel: '{underline file}',
-//         description: 'The input to process.'
-//       },
-//       {
-//         name: 'help',
-//         description: 'Print this usage guide.'
-//       }
-//     ]
-//   }
-// ]
-// const usage = commandLineUsage(sections);
-// console.log(usage);
-
 //Time to parse the command line arguments;
 const optionDefinitions = [
 	//{ name: 'help', alias: 'h', type: Number },
