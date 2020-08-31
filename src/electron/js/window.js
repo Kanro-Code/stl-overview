@@ -22,36 +22,46 @@ let dialogOptions = {
 
 let newPath = function(path) {
   if (currentFiles.includes(path)) return;
-  
-  currentFiles.push(path);
+
+  let list = document.querySelector('.f-list');  
 
   //append to list
+  let li = document.createElement('li');
+  li.classList.add('list-group-item');
+  li.innerHTML = `<span class="float-right f-delete">
+    <button type="button" class="btn btn-danger">X</button>
+    </span>
+    <p>${path}'</p>
+    <p class="f-meta">...</p>`;
+  list.appendChild(li);
 
+  setTimeout(() => {
+    li.querySelector('.f-meta').innerHTML = 'hi...' + path;
+  },2000);
 }
 
 let newDrop = function(files) {
-  console.log(files);
   for (let f of files) {
-    console.log(f.path);
-    f = f.path;
+    if (!currentFiles.includes(f.path)) {
+      currentFiles.push('f.path');
+      newPath(f.path);
+    }
   }
-
-  console.log(files);
 }
 
 let prepDrop = function() {
   let dropzone = document.querySelector("#drag");
 
   dropzone.addEventListener('drop', (e) => { 
-    dropzone.classList.remove('dragging');
     e.preventDefault(); 
     e.stopPropagation();
+
+    dropzone.classList.remove('dragging');
     
     newDrop(e.dataTransfer.files);
   }); 
 
   dropzone.addEventListener('dragover', (e) => { 
-    console.log('dragover');
     e.preventDefault(); 
     e.stopPropagation(); 
   }); 
