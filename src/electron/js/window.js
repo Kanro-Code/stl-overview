@@ -1,4 +1,11 @@
 const { dialog, ipcMain } = require('electron').remote;
+
+console.log(window.api);
+const ThreeD = require('../lib/threed');
+const Stl = require('../lib/stl');
+const Openscad = require('../lib/openscad');
+const Stitch = require('../lib/stitch');
+
 const path = require('path');
 
 let currentFiles = [];
@@ -21,34 +28,99 @@ let dialogOptions = {
 	{ name: 'All Files', extensions: ['*'] }]
 }
 
-let appendMeta = function(item, path) {
-	item.innerHTML = 'hi... ' + path;
+let removeDir = function(item, dir) {
+	var index = currentFiles.indexOf(dir);
+	currentFiles.splice(index, 1);
+	item.parentNode.removeChild(item);
 }
 
-let newPath = function(path) {
+let sizeDenom = function(number) {
+	let denom = ['kB', 'MB', 'GB'];
+	for (let index = 0; index < 4; index++) {
+		number = number / 1024;
+		if (number < 1024) {
+			return number.toFixed(1) + denom[index];
+		} 
+	}
+}
+
+// let appendMetaFile = function(li, dir) {
+// 	let meta = li.querySelector('.f-meta');
+// 	let file = ThreeD.getChildInstance(dir);
+// 	if (!file) {
+// 		alert(`${dir} appears to be an invalid or unsupported file.`);
+// 		removeDir(AudioListener, dir);
+// 		return;
+// 	}
+// 	meta.innerHTML = `1 potential file found - ${sizeDenom(file.size)}`;
+// }
+
+// let appendMetaFolder = async function(li, dir) {
+// 	let meta = li.querySelector('.f-meta');
+// 	let files = await ThreeD.getObjsFolder(dir, true);
+
+// 	if (files.length === 0) {
+// 		alert(`${dir} appears to be empty or contain no valid and supported file.`);
+// 		removeDir(li, dir);
+// 		return;
+// 	}
+
+// 	let size = 0;
+// 	files.forEach(file => {
+// 		size += file.size;
+// 	});
+
+// 	meta.innerHTML = `${files.length} potential files found - ${sizeDenom(size)}`;
+// }
+
+// let appendMeta = async function(li, dir) {
+// 	console.log(li);
+// 	if (path.parse(dir).ext) {
+// 		appendMetaFile(li, dir);
+// 	} else {
+// 		appendMetaFolder(li, dir);
+// 	}
+// }
+
+let appendMeta = async function(listItem, dir) {
+	let objs = ThreeD.getObjs(dir);
+	let meta = listItem.querySelector('.f-meta');
+	let size = 0;
+
+	if (!objs) {
+		alert(`Adding "${dir}" resulted in an error. Most likely this is due to not containing a valid and supported file type.`);
+		removeDir(listItem, dir);
+		return;
+	}
+
+	for (let i = 0; i < objs.length; i++) {
+		size += objs[i].size;
+	}
+	console.log(meta);
+	meta.innerHTML = `${objs.length} items found - ${sizeDenom(size)}`;
+
+}
+
+let newDir = function(dir) {
 	let list = document.querySelector('.f-list');  
 
 	//append to list
-	let li = document.createElement('li');
-	li.classList.add('list-group-item');
-	li.innerHTML = `<span class="float-right f-delete">
-		<button type="button" class="btn btn-danger">X</button>
+	let listItem = document.createElement('listItem');
+	listItem.classList.add('list-group-item');
+	listItem.innerHTML = `<span class="float-right f-delete">
+		<button type="button" onclick="removeDir(this.parentNode.parentNode, '${dir}')" class="btn btn-danger">X</button>
 		</span>
-		<p>${path}</p>
+		<p class="path">${dir}</p>
 		<p class="f-meta">...</p>`;
-	list.appendChild(li);
-
-	setTimeout(() => {
-		appendMeta(li.querySelector('.f-meta'), path);
-	},2000);
+	list.appendChild(listItem);
+	appendMeta(listItem, dir);
 }
 
-let checkPaths = function(paths) {
-	paths.forEach(path => {
-		console.log(path);
-		if (!currentFiles.includes(path)) {
-			currentFiles.push(path);
-			newPath(path);
+let checkDirs = function(dirs) {
+	dirs.forEach(dir => {
+		if (!currentFiles.includes(dir)) {
+			currentFiles.push(dir);
+			newDir(dir);
 		};
 	});
 }
@@ -62,7 +134,7 @@ let prepDrop = function() {
 		dropzone.classList.remove('dragging');
 
 		for (let f of e.dataTransfer.files) {
-			checkPaths([f.path]);
+			checkDirs([f.path]);
 		}
 	}); 
 
@@ -81,7 +153,7 @@ let prepDrop = function() {
 	
 	dropzone.addEventListener('click', err => {
 		let output = dialog.showOpenDialogSync(null, dialogOptions);
-		checkPaths(output);
+		checkDirs(output);
 	});
 }
 

@@ -1,6 +1,6 @@
 let window;
 
-const {app, BrowserWindow, dialog} = require('electron');
+const {app, BrowserWindow, dialog } = require('electron');
 const path = require('path');
 
 let isMac = (process.platform == 'darwin');

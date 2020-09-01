@@ -5,11 +5,9 @@ class ThreeD {
 	constructor(loc, settings) {
 		if (path.isAbsolute(loc)) {
 			this.absolute = path.normalize(loc);
-		} 
-		else {
+		} else {
 			this.absolute = path.resolve(process.cwd(), loc);
 		}
-
 		this.parse = path.parse(loc);
 	}
 
@@ -17,7 +15,6 @@ class ThreeD {
 		if (!this._size) {
 			this._size = fs.statSync(this.absolute).size;
 		}
-
 		return this._size;
 	}
 
@@ -36,12 +33,35 @@ class ThreeD {
 		fs.unlinkSync(this.image);
 	}
 
+	static getObjs = function(dir, recur = true) {
+		if (path.parse(dir).ext) {
+			let obj = this.getChildInstance(dir);
+
+			if (!obj) return false;
+
+			let objs = [];
+			objs.push(obj);
+
+			return objs;
+
+			//return objs;
+			// return [].push(obj);
+		} else {
+			let objs = this.getObjsFolder(dir, recur);
+			
+			if (objs.length == 0) return false;
+
+			return objs;
+		}
+	}
+
 	static getObjsFolder = function(dir, recur, list) {
 		list = list || [];
 		const files = fs.readdirSync(dir, { withFileTypes: true });
 
 		files.forEach(file => {
 			var currentFile = path.join(dir, file.name);
+			
 			if (recur && file.isDirectory()) {
 				list = this.getObjsFolder(currentFile, recur, list);
 			} else if (file.isFile()) {
