@@ -1,11 +1,9 @@
 const { dialog, ipcMain } = require('electron').remote;
 
-console.log(window.api);
 const ThreeD = require('../lib/threed');
 const Stl = require('../lib/stl');
 const Openscad = require('../lib/openscad');
 const Stitch = require('../lib/stitch');
-
 const path = require('path');
 
 let currentFiles = [];
@@ -44,51 +42,13 @@ let sizeDenom = function(number) {
 	}
 }
 
-// let appendMetaFile = function(li, dir) {
-// 	let meta = li.querySelector('.f-meta');
-// 	let file = ThreeD.getChildInstance(dir);
-// 	if (!file) {
-// 		alert(`${dir} appears to be an invalid or unsupported file.`);
-// 		removeDir(AudioListener, dir);
-// 		return;
-// 	}
-// 	meta.innerHTML = `1 potential file found - ${sizeDenom(file.size)}`;
-// }
-
-// let appendMetaFolder = async function(li, dir) {
-// 	let meta = li.querySelector('.f-meta');
-// 	let files = await ThreeD.getObjsFolder(dir, true);
-
-// 	if (files.length === 0) {
-// 		alert(`${dir} appears to be empty or contain no valid and supported file.`);
-// 		removeDir(li, dir);
-// 		return;
-// 	}
-
-// 	let size = 0;
-// 	files.forEach(file => {
-// 		size += file.size;
-// 	});
-
-// 	meta.innerHTML = `${files.length} potential files found - ${sizeDenom(size)}`;
-// }
-
-// let appendMeta = async function(li, dir) {
-// 	console.log(li);
-// 	if (path.parse(dir).ext) {
-// 		appendMetaFile(li, dir);
-// 	} else {
-// 		appendMetaFolder(li, dir);
-// 	}
-// }
-
 let appendMeta = async function(listItem, dir) {
 	let objs = ThreeD.getObjs(dir);
 	let meta = listItem.querySelector('.f-meta');
 	let size = 0;
 
 	if (!objs) {
-		alert(`Adding "${dir}" resulted in an error. Most likely this is due to not containing a valid and supported file type.`);
+		alert(`Adding file resulted in an error. Most likely this is due to not containing a valid and supported file type. \n File: "${dir}"`);
 		removeDir(listItem, dir);
 		return;
 	}
@@ -108,10 +68,14 @@ let newDir = function(dir) {
 	let listItem = document.createElement('listItem');
 	listItem.classList.add('list-group-item');
 	listItem.innerHTML = `<span class="float-right f-delete">
-		<button type="button" onclick="removeDir(this.parentNode.parentNode, '${dir}')" class="btn btn-danger">X</button>
+		<button type="button" onclick="removeDir(this.parentNode.parentNode, '${dir}')" class="close" aria-label="Close"><span aria-hidden="true">&times;</span></button>
 		</span>
 		<p class="path">${dir}</p>
 		<p class="f-meta">...</p>`;
+
+// 		<button type="button" class="close" aria-label="Close">
+//   <span aria-hidden="true">&times;</span>
+// </button>
 	list.appendChild(listItem);
 	appendMeta(listItem, dir);
 }
