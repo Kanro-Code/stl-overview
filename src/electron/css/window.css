@@ -1,35 +1,78 @@
-body {
-	background-image: url("../img/download (2).png");
-	background-position: center;
-	background-size: cover;
-	background-repeat: no-repeat;
-	background-attachment: fixed; /* <= This one */
-}
+@import url('https://fonts.googleapis.com/css?family=Roboto:300,400,400i,500');
 
-.container-mid {
+
+.container-init {
 	display: flex;
-	flex-direction: row;
-	justify-content: space-between;
 }
 
-.spacer {
-
+.sidebar {
+	z-index: 1000;
+	position: fixed;
+	width: 300px;
+	height: 100%;
+	overflow-y: auto;
+	background: #37474F;
+	font-family: 'Roboto', sans-serif;
 }
 
-.header {
-	font-weight: 700;
-	font-size: 3em;
-
+.sidebar header {
+  background-color: #263238;
+  font-size: 40px;
+  /* line-height: 52px; */
+	text-align: center;
+	padding: 10px 0 30px 0;
 }
 
-.main {
-	background-color: #1e2833;
-	margin-top: 15px; 
-	margin-bottom: 15px;
-	border-radius: 4px;
-	box-shadow: 7px 7px 4px rgba(0,0,0,0.2);
-	width: 800px;
-	max-width: 800px;
+a.disabled {
+	pointer-events: none;
+	color: #262c30 !important;
+}
+
+.sidebar header a {
+  color: #fff;
+  display: block;
+}
+
+.sidebar header a:hover {
+  color: #fff;
+}
+
+.sidebar .nav a{
+  background: none;
+  color: #CFD8DC;
+	padding: 30px 24px;
+	font-size: 16px;
+}
+.sidebar ul {
+	margin-top: 30px;
+}
+
+.sidebar li {
+	height: 40px;
+	width: 100%;
+	margin-bottom: 10px;
+}
+
+.sidebar li.current {
+  border-bottom: 4px solid #262c30;
+}
+
+.sidebar .nav a:hover{
+  background: none;
+  color: #ECEFF1;
+}
+
+.sidebar .nav a i{
+  margin-right: 16px;
+}
+
+
+
+.content {
+	background: grey;
+	flex-grow: 10;
+	flex-shrink: 6;
+	min-width: 600px;
 }
 
 .f-input {
@@ -52,10 +95,6 @@ body {
 .f-input-content.dragging,
 .f-input-content:hover {
 	background: linear-gradient(49deg, rgba(21, 97, 51, 0.4) 0%, rgba(226, 159, 15, 0.5) 100%);
-}
-
-.f-input-content:active {
-	background: linear-gradient(49deg, rgba(21, 97, 51, 0.6) 0%, rgba(226, 159, 15, 0.6) 100%);
 }
 
 .f-input-border {
@@ -86,16 +125,6 @@ body {
 	letter-spacing: 0.03em;
 	pointer-events: none;
 }
-
-.dragging .f-input-label,
-.f-input-content:hover .f-input-label {
-	color: rgb(180,210,180);
-}
-
-.f-input-content:active .f-input-label {
-	color: rgb(210, 230, 210);
-}
-
 
 .dragging .f-input-label {
 	font-weight: 900;
@@ -152,4 +181,13 @@ body {
 	border-bottom: 1px;
 	background: white;
 
+}
+
+
+.icon-file {
+	d: path('M 850 300 C 850 300 350 300 350 300 L 348.1 205.39 L 120 400.39 L 348.1 606.19 L 350 500 C 850 500 850 500 850 500 z') !important;
+}
+
+.svg-1:hover path {
+  d: path("M8,2 L2,8");
 }

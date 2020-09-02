@@ -16,9 +16,9 @@ async function createWindow (window) {
 			preload: path.join(__dirname, 'js/preload.js'),
 		},
 		show: false,
-	//	resizable: false,
+		resizable: true,
 		minHeight: 700,
-		minWidth: 900,
+    minWidth: 950,
 	});
 	
   window.once('ready-to-show', window.show);
