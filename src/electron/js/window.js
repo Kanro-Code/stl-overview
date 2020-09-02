@@ -1,4 +1,4 @@
-const { dialog, ipcMain } = require('electron').remote;
+const { dialog, ipcMain, shell } = require('electron').remote;
 
 const ThreeD = require('../lib/threed');
 const Stl = require('../lib/stl');
@@ -121,9 +121,28 @@ let prepDrop = function() {
 	});
 }
 
+let filePicker = function() {
+
+}
 
 let ready = function() {
-	prepDrop();
+	//prepDrop();
+
+	// Add link to openscad website
+	document.querySelector("#openscad").addEventListener('click', () => {
+		shell.openExternal('https://www.openscad.org/downloads.html');
+	});
+
+	document.querySelector("#openscad-exe").addEventListener('click', () => {
+		let opt = {
+			title: 'Find the Openscad .exe/app/package',
+			buttonLabel: 'Select',
+			properties: ['openFile']
+		}
+		let output = dialog.showOpenDialogSync(null, opt);
+	})
+
+
 }
 
 
