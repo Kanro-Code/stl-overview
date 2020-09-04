@@ -58,17 +58,14 @@
 				<br>
 
 				<div class="input-group">
-					<input type="text" class="form-control" disabled="disabled"> 
-					<span class="input-group-btn">
-						<button type="button" class="btn btn-default image-preview-clear" style="display:none;">
-							<span class="glyphicon glyphicon-remove"></span> Clear
-						</button>
-						<div class="btn btn-default image-preview-input">
-							<span class="image-preview-input-title">Browse</span>
-							<input type="file" name="input-file-preview" id="openscad-exe"> <!-- rename it -->
+					<div class="file-picker">
+						<input class="custom-file-input" id="openscad-exe">
+						<label class="custom-file-label btn" id="openscad-exe-text" for="openscad-exe">Select Openscad Location</label>
+						<div class="invalid-feedback">
+							There is something wrong with the Openscad Executable. Proceed at your own risk<br>
 						</div>
-					</span>
-				</div><!-- /input-group image-preview [TO HERE]--> 
+					</div>
+				</div>
 
 
 				<p class="text-note">Note: Currently, because of Openscad, the program only supports .stl files, .obj and others will be supported in a later build.</p>

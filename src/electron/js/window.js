@@ -133,13 +133,23 @@ let ready = function() {
 		shell.openExternal('https://www.openscad.org/downloads.html');
 	});
 
-	document.querySelector("#openscad-exe").addEventListener('click', () => {
-		let opt = {
-			title: 'Find the Openscad .exe/app/package',
+	document.querySelector("#openscad-exe").addEventListener('click', (e) => {
+		let openscad = dialog.showOpenDialogSync(null, {
+			title: 'Find the Openscad exe/app/package',
 			buttonLabel: 'Select',
 			properties: ['openFile']
+		});
+		var label = document.querySelector('#openscad-exe-text');
+		label.innerHTML = openscad[0];
+
+		console.log(e);
+		if (Openscad.isValidExe(openscad[0])) {
+			e.srcElement.classList.add('is-valid');
+			e.srcElement.classList.remove('is-invalid');
+		} else {
+			e.srcElement.classList.add('is-invalid');
+			e.srcElement.classList.remove('is-valid');
 		}
-		let output = dialog.showOpenDialogSync(null, opt);
 	})
 
 

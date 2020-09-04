@@ -26,6 +26,19 @@ class Openscad {
 		this.key = 1;
 	}
 
+	static isValidExe(dir) {
+		if (process.platform === 'darwin') {
+			dir = path.join(dir, 'Contents/MacOS/Openscad');
+		}
+
+		let output = child.spawnSync(dir, ['--info']);
+		if (output.status === 0) {
+			return true;
+		} else {
+			return false;
+		}
+	}
+
 	async generateImage(file) {
 		return new Promise((resolve, reject) => {
 			let id = this.key++;
