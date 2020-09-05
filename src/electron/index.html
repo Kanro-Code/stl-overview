@@ -77,9 +77,86 @@
 				<h2 class="p-title">1. Select Files and/or Folders</h2>
 				<div class="text-lead">
 					You can select individual (supported) files or folders to generate an output for. Every file/folder will generate it's own ouput.<br>
+					<p class="text-note">Keep in mind that all selected files and folders will use the same settings.</p>
+				</div>
+
+				<div class="f-input">
+					<div class="f-input-content" id="drag">
+						<div class="f-input-border"></div>
+						<div class="f-input-label">Drop folder(s) or file(s) here.*</div>
+					</div>
+					<div class="">
+						<button id="drop-file" type="button" class="btn btn-secondary">Select Files</button>
+						<button id="drop-folder" type="button" class="btn btn-secondary">Select Folders</button>
+					</div>
+
+				</div>
+				<ul class="list-group f-list"></ul>
+			</div>
+
+			<div class="text-container-spacer"></div>
+
+			<div class="text-container">
+				<h2 class="p-title">2. Output Image Settings</h2>
+				<div class="text-lead">
+					You can select individual (supported) files or folders to generate an output for. Every file/folder will generate it's own ouput.<br>
 					<p class="text-note">Keep in mind that all files and folders will use the same settings.</p>
 				</div>
+				<form style="border: solid #f8f9fa; padding: 1em">
+					<!-- IMAGE OUTPUT SIZE GROUP -->
+					<div class="form-group">
+
+					</div>
+					<!-- COLORSCHEME OUTPUT -->
+					<div class="form-group">
+						<label for="colorschemeselect"><b>Color Scheme</b></label>
+						<select id="colorschemeselect" class="form-control">
+							<option value="Cornfield">Cornfield (default)</option>
+							<option value="Metallic">Metallic</option>
+							<option value="Sunset">Sunset</option>
+							<option value="Starnight">Starnight</option>
+							<option value="BeforeDawn">Before Dawn</option>
+							<option value="Nature">Nature</option>
+							<option value="Deepocean">DeepOcean</option>
+							<option value="Solarized">Solarized</option>
+							<option value="Tomorrow">Tomorrow</option>
+							<option value="Tomorrow night">Tomorrow Night</option>
+						</select>
+					</div>
+
+					<div class="colorscheme-preview">
+						<img id="colorschemepreview" src="img/colorscheme/cornfield.png">
+					</div>
+					<hr>
+					<!-- PROJECTION GROUP -->
+					<div class="form-group">
+						<label for="perspective1"><b>Projection view</b></label>
+						<div class="form-check">
+							<input id="view-perspective" class="form-check-input" type="radio" name="perspective" id="perspective1" value="perspective" checked>
+							<label class="form-check-label" for="perspective1">
+								Perspective view (default)
+							</label>
+						</div>
+						<div class="form-check">
+							<input class="form-check-input" type="radio" name="perspective" id="perspective2" value="ortho">
+							<label class="form-check-label" for="perspective2">
+								Orthographic projection
+							</label>
+						</div>
+						<small class="form-text text-muted">Perspective viewpoints give more information about depth and are often easier to view because you use perspective views in real life. Orthographic viewpoints make it much easier to compare two parts of the molecule, as there is no question about how the viewpoint may affect the perception of distance. TLDR; Perspective will do fine.</small>
+						
+					</div>
+				</form>
 			</div>
+
+			<div class="text-container-spacer"></div>
+
+			<div class="text-container">
+				<h2 class="p-title">3. "Advanced" Settings</h2>
+				<div class="text-lead">
+					If you want to change some minor, more advanced settings, take a look th
+					<p class="text-note">Keep in mind that all selected files and folders will use the same settings.</p>
+				</div>
 		</div>
 	</div>
 

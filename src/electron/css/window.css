@@ -111,19 +111,21 @@ a.disabled {
 
 .f-input {
 	margin: 50px auto 50px auto;
-	box-shadow: 0 5px 15px 0 rgba(0,0,0,0.5);
 	width: 65%;
-	border-radius: 5px;
 }
 
 .f-input-content {
 	height: 250px;
+	margin-bottom: 10px;
 	position: relative;
 	background: linear-gradient(49deg, rgba(34,195,99,0.4) 0%, rgba(253,187,45,0.5) 100%);
 	justify-content: center;
 	z-index: 2;
-	border-radius: 10px;
-	cursor: pointer;
+	border-radius: 5px;
+	box-shadow: 0 5px 15px 0 rgba(0,0,0,0.5);
+
+
+	/* cursor: pointer; */
 }
 
 .f-input-content.dragging,
@@ -217,6 +219,14 @@ a.disabled {
 
 }
 
+.colorscheme-preview {
+	border-radius: 2px;
+}
+
+.colorscheme-preview img {
+	width: 200px;
+	height: 200px;
+}
 
 .icon-file {
 	d: path('M 850 300 C 850 300 350 300 350 300 L 348.1 205.39 L 120 400.39 L 348.1 606.19 L 350 500 C 850 500 850 500 850 500 z') !important;

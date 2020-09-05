@@ -77,7 +77,7 @@ class Openscad {
 		let flags = [
 			'-o' + output,
 			'--imgsize=' + this.conf.imgW + ',' + this.conf.imgH,
-			'--colorscheme=' + this.conf.imgColorscheme,
+			'--colorscheme="' + this.conf.imgColorscheme + '"',
 		];
 
 		//let test = "--camera=0,0,0,55,355,80,0"

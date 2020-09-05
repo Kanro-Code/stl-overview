@@ -12,17 +12,13 @@ let dialogOptions = {
 	title: 'Select folder(s) or file(s)',
 	buttonLabel: 'Select', 
 	properties: [
-		'openDirectory', 
 		'multiSelections', 
 		'dontAddToRecent',
 		'createDirectory',
 		'promptToCreate'
 	],
 	filters: [    
-		{ name: 'Images', extensions: ['jpg', 'png', 'gif'] 
-	},
-	{ name: 'Movies', extensions: ['mkv', 'avi', 'mp4'] },
-	{ name: 'Custom File Type', extensions: ['as'] },
+	{ name: 'Custom File Type', extensions: ['stl'] },
 	{ name: 'All Files', extensions: ['*'] }]
 }
 
@@ -115,19 +111,26 @@ let prepDrop = function() {
 		dropzone.classList.remove('dragging');
 	});
 	
-	dropzone.addEventListener('click', err => {
+	document.querySelector('#drop-file').addEventListener('click', () => {
+		let options = { ...dialogOptions };
+		options.properties.push('openFile');
 		let output = dialog.showOpenDialogSync(null, dialogOptions);
 		checkDirs(output);
 	});
+
+	document.querySelector('#drop-folder').addEventListener('click', () => {
+		let options = { ...dialogOptions };
+		options.properties.push('openDirectory');
+		let output = dialog.showOpenDialogSync(null, dialogOptions);
+		checkDirs(output);
+	})
+	// dropzone.addEventListener('click', err => {
+	// 	let output = dialog.showOpenDialogSync(null, dialogOptions);
+	// 	checkDirs(output);
+	// });
 }
 
-let filePicker = function() {
-
-}
-
-let ready = function() {
-	//prepDrop();
-
+let prepOpenscad = function() {
 	// Add link to openscad website
 	document.querySelector("#openscad").addEventListener('click', () => {
 		shell.openExternal('https://www.openscad.org/downloads.html');
@@ -137,7 +140,7 @@ let ready = function() {
 		let openscad = dialog.showOpenDialogSync(null, {
 			title: 'Find the Openscad exe/app/package',
 			buttonLabel: 'Select',
-			properties: ['openFile']
+			properties: ['openFile', 'multiSelections', 'openDirectory']
 		});
 		var label = document.querySelector('#openscad-exe-text');
 		label.innerHTML = openscad[0];
@@ -150,9 +153,22 @@ let ready = function() {
 			e.srcElement.classList.add('is-invalid');
 			e.srcElement.classList.remove('is-valid');
 		}
+	});
+}
+
+let prepColor = function() {
+	let selector = document.querySelector('#colorschemeselect');
+	selector.addEventListener('change', (e) => {
+		let image = document.querySelector('#colorschemepreview');
+		image.src = 'img/colorscheme/' + e.srcElement.value + '.png';
+		console.log(image.src);
 	})
+}
 
-
+let ready = function() {
+	prepDrop();
+	prepOpenscad();
+	prepColor();
 }
 
 
