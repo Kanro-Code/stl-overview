@@ -140,7 +140,7 @@ let prepOpenscad = function() {
 		let openscad = dialog.showOpenDialogSync(null, {
 			title: 'Find the Openscad exe/app/package',
 			buttonLabel: 'Select',
-			properties: ['openFile', 'multiSelections', 'openDirectory']
+			properties: ['openFile']
 		});
 		var label = document.querySelector('#openscad-exe-text');
 		label.innerHTML = openscad[0];
