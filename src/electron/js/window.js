@@ -165,10 +165,55 @@ let prepColor = function() {
 	})
 }
 
+let prepOutput = function() {
+	document
+		.querySelector('#outputLocation')
+		.addEventListener('click', (e) => {
+			let options = {
+				title: 'Pick a location to save your output',
+				buttonLabel: 'Select',
+				properties: [
+					'openDirectory',
+					'createDirectory',
+					'promtToCreate',
+				]
+			}
+
+			let output = dialog.showOpenDialogSync(null, options);
+
+			let text = document.querySelector('#outputLocationAbsolute');
+			if (output) {
+				text.value = output[0];
+				document.querySelector('#outputLoc2').checked = true;
+			}
+	});
+
+	// Check radio on change
+	document
+		.querySelector('#outputLocationRelative')
+		.addEventListener('input', (e) => {
+			document.querySelector('#outputLoc1').checked = true;
+		})
+}
+
+let pullSettings = function() {
+	let inputs = document.getElementsByTagName('input');
+	for (let i = 0; i < inputs.length; i++) {
+		console.log(inputs[i].value);
+	}
+}
+
+let start = function() {
+	console.log("Starting!");
+	let settings = pullSettings();
+}
+
 let ready = function() {
 	prepDrop();
 	prepOpenscad();
 	prepColor();
+	prepOutput();
+	prepStart();
 }
 
 
