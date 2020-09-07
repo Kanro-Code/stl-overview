@@ -235,6 +235,7 @@ let pullSettings = function() {
 
 		// Output settings
 		imgW: parseInt(pullValueId('imgW')),
+		imgH: parseInt(pullValueId('imgW')),
 		stitchColumns: parseInt(pullValueId('stitchColumns')),
 		
 		imgsMax: parseInt(pullValueId('imgsMax')),
@@ -256,8 +257,9 @@ let pullSettings = function() {
 
 let start = function() {
 	console.log("Starting!");
-	let settings = pullSettings();
-	console.log(settings);
+	let conf = pullSettings();
+	let scad = new Openscad(conf);
+	console.log(scad);
 }
 
 let ready = function() {
