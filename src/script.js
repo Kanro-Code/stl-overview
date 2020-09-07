@@ -67,7 +67,7 @@ var defExeLocation = function() {
 	// WIP, will find executable properly
 	let val = process.platform;
 	if (val == 'win32') return 'C:\\Program Files\\OpenSCAD\\openscad.exe';
-	if (val == 'darwin') return '/Applications/OpenSCAD.app/Contents/MacOS/OpenSCAD';
+	if (val == 'darwin') return '/Applications/OpenSCAD.app';
 
 	// freebsd/openbsd/linux to follow
 }

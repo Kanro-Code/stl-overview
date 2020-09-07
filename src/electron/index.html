@@ -22,7 +22,14 @@
 			<ul class="nav">
 				<p style="color: white; padding: 1em">This tool is very much still in development. Any feature request, ideas, feedback, or bugs can be submitted on github or contact Kanro#9735 on discord.</p>
 				<p style="color: white; padding: 1em">If you want to submit crash reports please try to give some context as to what you were doing, what files you were working with etc. Any detail can be important, even if it doesn't seem to make sense.</p>
-
+				<p style="color: white; padding: 1em; line-height: 1.2em;">Missing features/known bugs:<br>
+					-Settings not saving between sessions<br>
+					-No input validation -> You can crash this program if you input invalid settings<br>
+					-Progress bars are broken<br>
+					-Program can crash when you select a folder, and then turn off 'Find Files in Subfolders'<br>
+					<br>
+					-Most importantly: no proper crash or error handling
+				</p>
 				<!-- <li class="current">
 					<a href="./program-1.html">
 						<i class="button-getting-started">0. Getting Started</i>
@@ -58,17 +65,26 @@
 					In order to generate images from 3D objects a dependency is needed. If you have not yet done so, please install Openscad.
 					You can find Openscad <a href="" id="openscad">here.</a>
 				</div>
+				
 				<br>
 
 				<div class="input-group">
+					<input type="text" class="form-control" id="openscad-exe" placeholder="Select Openscad Location">
+					<div class="input-group-append" id="openscad-exe-group">
+						<button class="btn btn-outline-secondary" type="button" onclick="selectOpenscad()">Browse</button>
+					</div>
+					<div class="invalid-feedback">
+						There is something wrong with the Openscad Executable. Proceed at your own risk<br>
+					</div>
+				</div>
+
+				<!-- <div class="input-group">
 					<div class="file-picker">
 						<input class="custom-file-input" id="openscad-exe">
 						<label class="custom-file-label btn" id="openscad-exe-text" for="openscad-exe">Select Openscad Location</label>
-						<div class="invalid-feedback">
-							There is something wrong with the Openscad Executable. Proceed at your own risk<br>
-						</div>
+
 					</div>
-				</div>
+				</div> -->
 
 
 				<p class="text-note">Note: Currently, because of Openscad, the program only supports .stl files, .obj and others will be supported in a later build.</p>
@@ -100,8 +116,8 @@
 					<label for="perspective1"><b>Find files in subfolders</b></label>
 				
 					<div class="form-check">
-						<input class="form-check-input" type="checkbox" value="" id="recursive" checked>
-						<label class="form-check-label" for="fullrender">
+						<input class="form-check-input" type="checkbox" id="recursive" checked>
+						<label class="form-check-label">
 							Enable (default)
 						</label>
 					</div>
@@ -122,8 +138,8 @@
 					<!-- COLUMN SIZE -->
 
 				<div class="form-group">
-					<label for="formGroupExampleInput"><b>Output Width in Pixels</b></label>
-					<input type="text" class="form-control" value="1200">
+					<label><b>Output Width in Pixels</b></label>
+					<input type="text" class="form-control" value="1200" id="imgW">
 				</div>
 				<!-- Preview -->
 				<div class="preview-output-container">
@@ -131,15 +147,15 @@
 				</div>
 
 				<div class="form-group">
-					<label for="formGroupExampleInput"><b>Number of 3D objects per column</b></label>
-					<input type="text" class="form-control" placeholder="4" value="4">
+					<label><b>Number of 3D objects per column</b></label>
+					<input type="text" class="form-control" placeholder="4" value="4" id="stitchColumns">
 					<small class="form-text text-muted">If a folder has less than the set number it will automatically adjust based on your preference.</small>
 				</div>
 
 				<!-- Max number -->
 				<div class="form-group">
-					<label for="formGroupExampleInput"><b>Maximum number of 3D objects</b></label>
-					<input type="text" class="form-control" value="60">
+					<label><b>Maximum number of 3D objects</b></label>
+					<input type="text" class="form-control" value="60" id="imgsMax">
 					<small class="form-text text-muted">Set to 0 for no limit. </small>
 				</div>
 
@@ -148,7 +164,7 @@
 				<div class="form-group">
 					<label for="colorschemeselect"><b>Color Scheme</b></label>
 					<select id="colorschemeselect" class="form-control" size="10">
-						<option value="Cornfield">Cornfield (default)</option>
+						<option value="Cornfield" selected>Cornfield (default)</option>
 						<option value="Metallic">Metallic</option>
 						<option value="Sunset">Sunset</option>
 						<option value="Starnight">Starnight</option>
@@ -176,7 +192,7 @@
 						<div class="input-group-prepend">
 							<span class="input-group-text">Relative Path</span>
 						</div>
-						<input type="text" class="form-control" id="outputLocationRelative" value="./preview/">
+						<input type="text" class="form-control" id="outputRelative" value="./preview/">
 					</div>
 
 					<div class="input-group">
@@ -186,7 +202,7 @@
 						<div class="input-group-prepend">
 							<span class="input-group-text">Absolute Path</span>
 						</div>
-						<input type="text" class="form-control" id="outputLocationAbsolute">
+						<input type="text" class="form-control" id="outputAbsolute"">
 						<div class="input-group-append">
 							<button class="btn btn-secondary" type="button" id="outputLocation">Browse</button>
 						</div>
@@ -208,28 +224,41 @@
 
 				<!-- Random vs size based -->
 				<div class="form-group">
-					<label for="perspective1"><b>3D Object selection</b></label>
+					<label><b>3D Object selection</b></label>
 					<div class="form-check">
-						<input class="form-check-input" type="radio" name="sizeSelection" id="perspective1" value="sizeSelection" checked>
-						<label class="form-check-label" for="perspective1">
+						<input class="form-check-input" type="radio" name="orderBy" value="size" checked>
+						<label class="form-check-label">
 							Based on size, larger files first (default)
 						</label>
 					</div>
 					<div class="form-check">
-						<input class="form-check-input" type="radio" name="sizeSelection" id="perspective2" value="randomSelection">
-						<label class="form-check-label" for="perspective2">
+						<input class="form-check-input" type="radio" name="orderBy" value="random">
+						<label class="form-check-label">
 							Random selection
 						</label>
 					</div>
 					<small class="form-text text-muted">When the maximum number of 3D objects is passed you can make the program make a choice based on size or randomness.</small>
 				</div>
 				<hr>
+				<!-- Keep preview -->
 
+				<div class="form-group">
+					<label for="perspective1"><b>Create individual images out of every STL in a folder</b></label>
+					<div class="form-check">
+						<input class="form-check-input" type="checkbox" id="imgsKeepPreview">
+						<label class="form-check-label" for="autocenter">
+							Enable
+						</label>
+						<small class="form-text text-muted">This option is for those that want to generate an image for every 3D object found in a folder/subfolders. The image will be 800x800. Save location will always be relative in ./previews/. ! This can make the whole process take a lot longer, and take up significant disk space !</small>
+					</div>
+				</div>
+
+				<hr>
 				<!-- Autocenter/view entire object -->
 				<div class="form-group">
 					<label for="perspective1"><b>Auto Center 3D bject</b></label>
 					<div class="form-check">
-						<input class="form-check-input" type="checkbox" value="" id="autocenter" checked>
+						<input class="form-check-input" type="checkbox" id="imgAutoCenter" checked>
 						<label class="form-check-label" for="autocenter">
 							Enable (default)
 						</label>
@@ -239,8 +268,8 @@
 				<div class="form-group">
 					<label for="perspective1"><b>View entire 3D object</b></label>
 					<div class="form-check">
-						<input class="form-check-input" type="checkbox" value="" id="fullrender" checked>
-						<label class="form-check-label" for="fullrender">
+						<input class="form-check-input" type="checkbox" id="imgViewAll" checked>
+						<label class="form-check-label">
 							Enable (default)
 						</label>
 						<small class="form-text text-muted">Openscad automatically scales object to fit in viewport.</small>
@@ -253,8 +282,8 @@
 				<div class="form-group">
 					<label for="perspective1"><b>Full render in Openscad</b></label>
 					<div class="form-check">
-						<input class="form-check-input" type="checkbox" value="" id="fullrender">
-						<label class="form-check-label" for="fullrender">
+						<input class="form-check-input" type="checkbox" id="imgsFullRender">
+						<label class="form-check-label">
 							Enable
 						</label>
 						<small class="form-text text-muted">If you don't know what this means, you do not need it. It <u>adds significant render time</u> and has no benefit for 99.9% of files.</small>
@@ -285,7 +314,7 @@
 				<div class="form-group">
 					<label for="parallel"><b>How many parallel openscad renders</b></label>
 					<div class="form-group">
-						<input type="email" class="form-control" id="parallel" value="8">
+						<input type="email" class="form-control" id="scadMaxProcesses" value="8">
 					</div>
 					<small class="form-text text-muted">In order to speed up the process of rendering all the files you can decide to run more than a few proceses at the same time. For speed, it's suggested to use 1x your CPU thread count.
 						If this lags your PC, consider tuning it down.

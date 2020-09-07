@@ -77,6 +77,8 @@ let newDir = function(dir) {
 }
 
 let checkDirs = function(dirs) {
+	if (!dirs) return false;
+
 	dirs.forEach(dir => {
 		if (!currentFiles.includes(dir)) {
 			currentFiles.push(dir);
@@ -137,23 +139,27 @@ let prepOpenscad = function() {
 	});
 
 	document.querySelector("#openscad-exe").addEventListener('click', (e) => {
-		let openscad = dialog.showOpenDialogSync(null, {
-			title: 'Find the Openscad exe/app/package',
-			buttonLabel: 'Select',
-			properties: ['openFile']
-		});
-		var label = document.querySelector('#openscad-exe-text');
-		label.innerHTML = openscad[0];
 
-		console.log(e);
-		if (Openscad.isValidExe(openscad[0])) {
-			e.srcElement.classList.add('is-valid');
-			e.srcElement.classList.remove('is-invalid');
-		} else {
-			e.srcElement.classList.add('is-invalid');
-			e.srcElement.classList.remove('is-valid');
-		}
 	});
+}
+
+let selectOpenscad = function(e) {
+	let output = dialog.showOpenDialogSync(null, {
+		title: 'Find the Openscad exe/app/package',
+		buttonLabel: 'Select',
+		properties: ['openFile']
+	});
+
+	var label = document.querySelector('#openscad-exe');
+	label.value = output;
+
+	if (Openscad.isValidExe(output[0])) {
+		label.classList.add('is-valid');
+		label.classList.remove('is-invalid');
+	} else {
+		label.classList.add('is-invalid');
+		label.classList.remove('is-valid');
+	}
 }
 
 let prepColor = function() {
@@ -190,22 +196,68 @@ let prepOutput = function() {
 
 	// Check radio on change
 	document
-		.querySelector('#outputLocationRelative')
+		.querySelector('#outputLocation')
 		.addEventListener('input', (e) => {
 			document.querySelector('#outputLoc1').checked = true;
 		})
 }
 
+let pullValueId = function(id) {
+	return document.querySelector('#' + id).value;
+}
+
+let pullValueRadio = function(name) {
+	var el = document.getElementsByName(name);
+
+	for (var i = 0, length = el.length; i < length; i++) {
+		if (el[i].checked) return el[i].value;
+	}
+}
+
+let pullValueCheck = function(id) {
+	return document.querySelector('#' + id).checked;
+}
+
 let pullSettings = function() {
 	let inputs = document.getElementsByTagName('input');
-	for (let i = 0; i < inputs.length; i++) {
-		console.log(inputs[i].value);
-	}
+	let dirV = pullValueRadio('outputLocation');
+	let dir = pullValueId(dirV);
+	console.log(dir);
+
+
+	let conf = {
+		// Openscad
+		scadExe: pullValueId('openscad-exe'),
+
+		// Select files
+		files: currentFiles,
+		imgsRecur: pullValueCheck('recursive'),
+
+		// Output settings
+		imgW: parseInt(pullValueId('imgW')),
+		stitchColumns: parseInt(pullValueId('stitchColumns')),
+		
+		imgsMax: parseInt(pullValueId('imgsMax')),
+		imgsSortedRandom: pullValueRadio('orderBy') == 'random',
+		imgColorscheme: pullValueId('colorschemeselect'),
+		scadOutputName: dir,
+
+		// advanced settings
+		imgsKeepPreview: pullValueCheck('imgsKeepPreview'),
+		imgAutoCenter: pullValueCheck('imgAutoCenter'),
+		imgViewAll: pullValueCheck('imgViewAll'),
+		imgFullRender: pullValueCheck('imgsFullRender'),
+		imgOrtho: pullValueRadio('perspective') == 'ortho',
+		scadMaxProcesses: pullValueId('scadMaxProcesses'),
+	};
+
+	return conf;
 }
 
 let start = function() {
 	console.log("Starting!");
 	let settings = pullSettings();
+	console.log(settings);
 }
 
 let ready = function() {
@@ -213,10 +265,13 @@ let ready = function() {
 	prepOpenscad();
 	prepColor();
 	prepOutput();
-	prepStart();
 }
 
 
 
 document.addEventListener('DOMContentLoaded', ready);
 
+window.onerror = function(error, file, line) {
+	alert(file + " - " + line + " - " + error.toString());
+	console.log(error);
+};
