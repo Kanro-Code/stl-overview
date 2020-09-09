@@ -4,6 +4,7 @@ const ThreeD = require('../lib/threed');
 const Stl = require('../lib/stl');
 const Openscad = require('../lib/openscad');
 const Stitch = require('../lib/stitch');
+const Process = require('./process')
 const path = require('path');
 
 let currentFiles = [];
@@ -188,8 +189,9 @@ let prepOutput = function() {
 			let output = dialog.showOpenDialogSync(null, options);
 
 			let text = document.querySelector('#outputLocationAbsolute');
+
 			if (output) {
-				text.value = output[0];
+				text.value = output;
 				document.querySelector('#outputLoc2').checked = true;
 			}
 	});
@@ -220,17 +222,11 @@ let pullValueCheck = function(id) {
 
 let pullSettings = function() {
 	let inputs = document.getElementsByTagName('input');
-	let dirV = pullValueRadio('outputLocation');
-	let dir = pullValueId(dirV);
-	console.log(dir);
-
-
 	let conf = {
 		// Openscad
 		scadExe: pullValueId('openscad-exe'),
 
 		// Select files
-		files: currentFiles,
 		imgsRecur: pullValueCheck('recursive'),
 
 		// Output settings
@@ -241,7 +237,6 @@ let pullSettings = function() {
 		imgsMax: parseInt(pullValueId('imgsMax')),
 		imgsSortedRandom: pullValueRadio('orderBy') == 'random',
 		imgColorscheme: pullValueId('colorschemeselect'),
-		scadOutputName: dir,
 
 		// advanced settings
 		imgsKeepPreview: pullValueCheck('imgsKeepPreview'),
@@ -252,14 +247,33 @@ let pullSettings = function() {
 		scadMaxProcesses: pullValueId('scadMaxProcesses'),
 	};
 
+	if (pullValueRadio('outputLocation') == 'outputRelative') {
+		conf.scadOutputName = pullValueId('outputRelative');
+		conf.scadOutputAbsolute = false;
+	} else {
+		conf.scadOutputName = pullValueId('outputLocationAbsolute');
+		conf.scadOutputAbsolute = true;
+	}
+
 	return conf;
 }
 
+let prepProgress = function() {
+	let el = document.querySelector('#progress');
+
+	el.addEventListener('message', (e) => {
+		let text = el.querySelector('#temp');
+		console.log(e);
+	})
+
+	return el;
+}
+
 let start = function() {
-	console.log("Starting!");
 	let conf = pullSettings();
-	let scad = new Openscad(conf);
-	console.log(scad);
+	let progress = document.querySelector('#progress');
+	let process = new Process(conf, currentFiles, prepProgress());
+	process.start();
 }
 
 let ready = function() {
@@ -272,6 +286,16 @@ let ready = function() {
 
 
 document.addEventListener('DOMContentLoaded', ready);
+
+process.on("uncaughtException", (err) => {
+	const messageBoxOptions = {
+			 type: "error",
+			 title: "Error in Main process",
+			 message: "Something failed"
+	 };
+	 dialog.showMessageBox(messageBoxOptions);
+	 throw err;
+});
 
 window.onerror = function(error, file, line) {
 	alert(file + " - " + line + " - " + error.toString());

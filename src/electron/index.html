@@ -202,7 +202,7 @@
 						<div class="input-group-prepend">
 							<span class="input-group-text">Absolute Path</span>
 						</div>
-						<input type="text" class="form-control" id="outputAbsolute"">
+						<input type="text" class="form-control" id="outputLocationAbsolute">
 						<div class="input-group-append">
 							<button class="btn btn-secondary" type="button" id="outputLocation">Browse</button>
 						</div>
@@ -327,10 +327,11 @@
 		</div>
 		<div class="text-container-spacer"></div>
 
-		<div class="text-container">
+		<div class="text-container" id="progress">
 			<h2 class="p-title">4. Start Process</h2>
 			<button type="button" class="btn btn-danger" onclick="start();">Generate Images</button>
 			<hr>
+			<p id="temp"></p>
 			<div class="progress-bar-text">
 				Files/Folders
 			</div>
