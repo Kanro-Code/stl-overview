@@ -18,7 +18,7 @@ class ThreeD {
 		return this._size;
 	}
 
-	generateImage(openscad) {
+	async generateImage(openscad) {
 		return new Promise((resolve, reject) => {
 			openscad.generateImage(this.absolute)
 				.then(image => {

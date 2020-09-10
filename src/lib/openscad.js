@@ -24,8 +24,6 @@ class Openscad {
 		this.conf.scadExe = path.resolve(this.conf.scadExe);
 
 		this.key = 1;
-
-		console.log(this.conf);
 	}
 
 	static isValidExe(dir) {
@@ -78,12 +76,10 @@ class Openscad {
 		importFile = path.parse(importFile).base;
 		let flags = [
 			'-o' + output,
-			'--imgsize=' + this.conf.imgW + ',' + this.conf.imgH,
-			'--colorscheme="' + this.conf.imgColorscheme + '"',
+			`--imgsize=${this.conf.imgW},${this.conf.imgH}`,
+			`--colorscheme=${this.conf.imgColorscheme}`
 		];
 
-		//let test = "--camera=0,0,0,55,355,80,0"
-		//flags.push(test);
 
 		if (this.conf.imgAutoCenter) flags.push('--autocenter');
 		if (this.conf.imgViewAll) flags.push('--viewall');
