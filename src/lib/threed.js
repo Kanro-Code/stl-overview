@@ -33,7 +33,7 @@ class ThreeD {
 		fs.unlinkSync(this.image);
 	}
 
-	static getObjs = function(dir, recur = true) {
+	static getObjs = function(dir, recur = true, sortedBySize = false) {
 		if (path.parse(dir).ext) {
 			let obj = this.getChildInstance(dir);
 
@@ -51,6 +51,9 @@ class ThreeD {
 			
 			if (objs.length == 0) return false;
 
+			if (sortedBySize) {
+				this.sortBySize(objs);
+			}
 			return objs;
 		}
 	}
@@ -92,6 +95,10 @@ class ThreeD {
 			return b.size - a.size;
 		}) 
 		return list;
+	}
+
+	static sortByRandom = function(list) {
+		
 	}
 
 

@@ -24,6 +24,8 @@ class Openscad {
 		this.conf.scadExe = path.resolve(this.conf.scadExe);
 
 		this.key = 1;
+
+		console.log(this.conf);
 	}
 
 	static isValidExe(dir) {

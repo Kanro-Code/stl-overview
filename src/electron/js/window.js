@@ -138,10 +138,6 @@ let prepOpenscad = function() {
 	document.querySelector("#openscad").addEventListener('click', () => {
 		shell.openExternal('https://www.openscad.org/downloads.html');
 	});
-
-	document.querySelector("#openscad-exe").addEventListener('click', (e) => {
-
-	});
 }
 
 let selectOpenscad = function(e) {
@@ -150,6 +146,8 @@ let selectOpenscad = function(e) {
 		buttonLabel: 'Select',
 		properties: ['openFile']
 	});
+
+	if (!output) return;
 
 	var label = document.querySelector('#openscad-exe');
 	label.value = output;
@@ -230,12 +228,11 @@ let pullSettings = function() {
 		imgsRecur: pullValueCheck('recursive'),
 
 		// Output settings
-		imgW: parseInt(pullValueId('imgW')),
-		imgH: parseInt(pullValueId('imgW')),
+		outputW: parseInt(pullValueId('outputW')),
 		stitchColumns: parseInt(pullValueId('stitchColumns')),
 		
 		imgsMax: parseInt(pullValueId('imgsMax')),
-		imgsSortedRandom: pullValueRadio('orderBy') == 'random',
+		imgsSortedSize: pullValueRadio('orderBy') == 'size',
 		imgColorscheme: pullValueId('colorschemeselect'),
 
 		// advanced settings
