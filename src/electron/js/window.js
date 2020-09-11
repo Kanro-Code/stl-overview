@@ -152,7 +152,7 @@ let selectOpenscad = function(e) {
 	var label = document.querySelector('#openscad-exe');
 	label.value = output;
 
-	if (Openscad.isValidExe(output[0])) {
+	if (Openscad.getValidExe(output[0])) {
 		label.classList.add('is-valid');
 		label.classList.remove('is-invalid');
 	} else {
