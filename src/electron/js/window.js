@@ -156,12 +156,14 @@ const prepOpenscad = function () {
 }
 
 const prepColor = function () {
-  const selector = document.querySelector('#colorschemeselect')
-  selector.addEventListener('change', (e) => {
-    const image = document.querySelector('#colorschemepreview')
-    image.src = 'img/colorscheme/' + e.srcElement.value + '.png'
-    console.log(image.src)
-  })
+  const image = document.querySelector('#colorschemepreview')
+  image.src = 'img/colorscheme/Cornfield.png'
+  document.querySelector('#colorschemeselect')
+    .addEventListener('change', (e) => {
+      const image = document.querySelector('#colorschemepreview')
+      image.src = 'img/colorscheme/' + e.srcElement.value + '.png'
+      console.log(image.src)
+    })
 }
 
 const prepOutput = function () {

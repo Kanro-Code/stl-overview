@@ -1,31 +1,32 @@
 {
   "name": "stl-overview",
   "version": "0.0.3",
-  "description": "",
-  "main": "index.js",
+  "description": "Stl Overview does just that, creates a image from a selected folder filled with Stls.",
+  "main": "src/electron/index.js",
   "scripts": {
     "test": "jest",
-    "start": "electron ./src/electron/index.js"
+    "start": "electron src/electron/index.js",
+    "pack": "electron-builder --dir",
+    "dist": "electron-builder"
   },
   "author": "",
   "license": "ISC",
   "dependencies": {
     "async": "^3.2.0",
-    "command-line-args": "^5.1.1",
-    "command-line-usage": "^6.1.0",
-    "electron": "^10.0.1",
     "jimp": "^0.16.0",
-    "mkdirp": "^1.0.4",
+    "mkdirp": "^1.0.4"
+    
+  },
+  "devDependencies": {
+    "electron": "^10.0.1",
+    "electron-builder": "^22.8.0",
+    "jest": "^26.4.2",
     "standard": "^14.3.4"
   },
-  "bin": {
-    "stl-overview": "./index.js"
-  },
-  "files": [
-    "lib",
-    "index.js"
-  ],
-  "devDependencies": {
-    "jest": "^26.4.2"
+  "build": {
+    "appId": "com.electron.stl-overview",
+    "mac": {
+      "category": "public.app-category.graphics-design"
+    }
   }
 }

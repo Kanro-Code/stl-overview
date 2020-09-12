@@ -1,6 +1,7 @@
 let window
 
 const { app, BrowserWindow } = require('electron')
+const path = require('path')
 const isMac = (process.platform === 'darwin')
 
 async function createWindow (window) {
@@ -11,6 +12,8 @@ async function createWindow (window) {
       nodeIntegration: true,
       contextIsolation: false,
       enableRemoteModule: true
+      // webSecurity: false
+
       // preload: path.join(__dirname, 'js/preload.js')
     },
     show: false,
@@ -20,9 +23,10 @@ async function createWindow (window) {
   })
 
   window.once('ready-to-show', window.show)
-  window.loadFile('index.html')
+  window.loadFile(path.join(__dirname, 'index.html'))
+  // window.webContents.openDevTools()
   window.webContents.openDevTools()
-};
+}
 
 app.whenReady().then(() => {
   createWindow(window)
@@ -34,5 +38,5 @@ app.whenReady().then(() => {
 })
 
 app.on('window-all-closed', () => {
-  if (isMac) app.quit()
+  app.quit()
 })
