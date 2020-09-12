@@ -15,7 +15,8 @@
     "command-line-usage": "^6.1.0",
     "electron": "^10.0.1",
     "jimp": "^0.16.0",
-    "mkdirp": "^1.0.4"
+    "mkdirp": "^1.0.4",
+    "standard": "^14.3.4"
   },
   "bin": {
     "stl-overview": "./index.js"

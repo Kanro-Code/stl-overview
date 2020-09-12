@@ -2,18 +2,76 @@ const path = require('path');
 const fs = require('fs');
 
 class ThreeD {
-	constructor(location, settings) {
+	constructor(location) {
 		this.location = location;
 	}
 
 	async generateImage(output, scad, settings) {
-		if (!settings.h) 
+		if (!settings.h)
 			settings.h = 800;
-		if (!settings.w) 
+		if (!settings.w)
 			settings.w = 800;
-		
+
 		output = await scad.generateImage(output, this, settings);
 		return output;
+	}
+
+	static getChildInstance = function(file) {
+		let Stl = require('./threed-stl.js');
+		if (Stl.isStl(file)) return new Stl(file);
+
+		let Obj = require('./threed-obj.js');
+		if (Obj.isObj(file)) return new Obj(file);
+	}
+
+	static getObjsFolder = function (dir, recur = true, objs) {
+		objs = objs || [];
+		const files = fs.readdirSync(dir, { withFileTypes: true });
+
+		files.forEach(file => {
+			var currentFile = path.join(dir, file.name);
+
+			if (recur && file.isDirectory()) {
+				objs = this.getObjsFolder(currentFile, recur, objs);
+			} else if (file.isFile()) {
+				let obj = this.getChildInstance(currentFile);
+				if (obj) objs.push(obj);
+			}
+		});
+
+		return objs;
+	}
+
+	static getObjs = function (dir, recur = true, sortedBy) {
+		if (path.parse(dir).ext) {
+			let obj = this.getChildInstance(dir);
+			return (obj) ? [obj] : false;
+		} else {
+			let objs = this.getObjsFolder(dir, recur);
+
+			if (sortedBy === 'size') {
+				objs.sort((a,b) => {
+					return b.size - a.size;
+				});
+			} else if(sortedBy === 'random') {
+				// https://stackoverflow.com/questions/2450954/how-to-randomize-shuffle-a-javascript-array
+				for (let i = objs.length - 1; i > 0; i--) {
+					const j = Math.floor(Math.random() * (i + 1));
+					[objs[i], objs[j]] = [objs[j], objs[i]];
+				}
+			}
+
+			return objs;
+		}
+	}
+
+	set location(location) {
+		this._location = location;
+		this._size = null;
+	}
+
+	get location() {
+		return this._location;
 	}
 
 	get size() {
@@ -22,91 +80,6 @@ class ThreeD {
 		}
 		return this._size;
 	}
-
-	// async generateImage(openscad) {
-	// 	return new Promise((resolve, reject) => {
-	// 		openscad.generateImage(this.absolute)
-	// 			.then(image => {
-	// 				this.image = image;
-	// 				resolve(image);
-	// 			})
-	// 			.catch(err => reject(err));
-	// 	})
-	// }
-
-	// deleteImage() {
-	// 	fs.unlinkSync(this.image);
-	// }
-
-	// static getObjs = function(dir, recur = true, sortedBySize = false) {
-	// 	if (path.parse(dir).ext) {
-	// 		let obj = this.getChildInstance(dir);
-
-	// 		if (!obj) return false;
-
-	// 		let objs = [];
-	// 		objs.push(obj);
-
-	// 		return objs;
-
-	// 		//return objs;
-	// 		// return [].push(obj);
-	// 	} else {
-	// 		let objs = this.getObjsFolder(dir, recur);
-			
-	// 		if (objs.length == 0) return false;
-
-	// 		if (sortedBySize) {
-	// 			this.sortBySize(objs);
-	// 		}
-	// 		return objs;
-	// 	}
-	// }
-
-	// static getObjsFolder = function(dir, recur, list) {
-	// 	list = list || [];
-	// 	const files = fs.readdirSync(dir, { withFileTypes: true });
-
-	// 	files.forEach(file => {
-	// 		var currentFile = path.join(dir, file.name);
-			
-	// 		if (recur && file.isDirectory()) {
-	// 			list = this.getObjsFolder(currentFile, recur, list);
-	// 		} else if (file.isFile()) {
-	// 			let instance = this.getChildInstance(currentFile);
-	// 			if (instance) {
-	// 				list.push(instance);
-	// 			}
-	// 		}
-	// 	});
-
-	// 	return list;
-	// }
-
-	// static getChildInstance = function(file) {
-	// 	let Stl = require('./stl.js');
-	// 	if (Stl.isStl(file)) {
-	// 		return new Stl(file);
-	// 	}
-
-	// 	let Obj = require('./obj.js');
-	// 	if (Obj.isObj(file)) {
-	// 		return new Obj(file);
-	// 	}
-	// }
-
-	// static sortBySize = function(list) {
-	// 	list.sort(function(a,b) {
-	// 		return b.size - a.size;
-	// 	}) 
-	// 	return list;
-	// }
-
-	// static sortByRandom = function(list) {
-		
-	// }
-
-
 }
 
 module.exports = ThreeD;

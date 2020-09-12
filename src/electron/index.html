@@ -9,7 +9,6 @@
 	<link rel="stylesheet" href="./css/bootstrap.min.css">
 	<link rel="stylesheet" href="./css/window.css">
 	<script src="./js/window.js" charset="utf-8"></script>
-	<script src="./js/renderer.js"></script>
 	<meta http-equiv="Content-Security-Policy" content="script-src 'self' 'unsafe-inline';" /> 
 </head>
 
@@ -71,22 +70,12 @@
 				<div class="input-group">
 					<input type="text" class="form-control" id="openscad-exe" placeholder="Select Openscad Location">
 					<div class="input-group-append" id="openscad-exe-group">
-						<button class="btn btn-outline-secondary" type="button" onclick="selectOpenscad()">Browse</button>
+						<button class="btn btn-outline-secondary" type="button" id="selectOpenscad">Browse</button>
 					</div>
 					<div class="invalid-feedback">
 						There is something wrong with the Openscad Executable. Proceed at your own risk<br>
 					</div>
 				</div>
-
-				<!-- <div class="input-group">
-					<div class="file-picker">
-						<input class="custom-file-input" id="openscad-exe">
-						<label class="custom-file-label btn" id="openscad-exe-text" for="openscad-exe">Select Openscad Location</label>
-
-					</div>
-				</div> -->
-
-
 				<p class="text-note">Note: Currently, because of Openscad, the program only supports .stl files, .obj and others will be supported in a later build.</p>
 			</div>
 
@@ -329,7 +318,7 @@
 
 		<div class="text-container" id="progress">
 			<h2 class="p-title">4. Start Process</h2>
-			<button type="button" class="btn btn-danger" onclick="start();">Generate Images</button>
+			<button type="button" class="btn btn-danger" id="startGenerate">Generate Images</button>
 			<hr>
 			<p id="temp"></p>
 			<div class="progress-bar-text">
