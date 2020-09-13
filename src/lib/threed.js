@@ -38,8 +38,7 @@ class ThreeD {
 				if (obj) objs.push(obj);
 			}
 		});
-
-		return objs;
+		return objs
 	}
 
 	static getObjs = function (dir, recur = true, sortedBy) {
@@ -61,7 +60,7 @@ class ThreeD {
 				}
 			}
 
-			return objs;
+			return objs
 		}
 	}
 

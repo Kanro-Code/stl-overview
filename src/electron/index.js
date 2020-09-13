@@ -12,9 +12,6 @@ async function createWindow (window) {
       nodeIntegration: true,
       contextIsolation: false,
       enableRemoteModule: true
-      // webSecurity: false
-
-      // preload: path.join(__dirname, 'js/preload.js')
     },
     show: false,
     resizable: true,

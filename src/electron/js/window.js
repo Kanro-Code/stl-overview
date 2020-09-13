@@ -19,11 +19,22 @@ const dialogOptions = {
     { name: 'Custom File Type', extensions: ['stl'] },
     { name: 'All Files', extensions: ['*'] }]
 }
+const removeDirClick = function (e) {
+  const item = e.srcElement.parentNode
+  removeDir(item.value)
+  const p = item.parentNode.parentNode
+  p.parentNode.removeChild(p)
+}
 
-const removeDir = function (item, dir) {
-  var index = currentFiles.indexOf(dir)
-  currentFiles.splice(index, 1)
-  item.parentNode.removeChild(item)
+const removeDir = function (dir) {
+  for (var i = currentFiles.length - 1; i >= 0; i--) {
+    if (currentFiles[i] === dir) {
+      console.log('deleting')
+      currentFiles.splice(i, 1)
+      break
+    }
+  }
+  console.log(currentFiles)
 }
 
 const sizeDenom = function (number) {
@@ -41,17 +52,17 @@ const appendMeta = async function (listItem, dir) {
   const meta = listItem.querySelector('.f-meta')
   let size = 0
 
-  if (!objs) {
-    alert(`Adding file resulted in an error. Most likely this is due to not containing a valid and supported file type. \n File: "${dir}"`)
-    removeDir(listItem, dir)
-    return
+  if (objs.length === 0) {
+    // customError(`Adding file resulted in an error. Most likely this is due to not containing a valid and supported file type. <br> &nbsp; Path: "${dir}"`, 1)
+    removeDir(dir)
+    meta.innerHTML = '<p class="f-meta" style="color:red">Could not find valid files, will not process</p>'
+  } else {
+    for (let i = 0; i < objs.length; i++) {
+      size += objs[i].size
+    }
+    console.log(meta)
+    meta.innerHTML = `${objs.length} items found - ${sizeDenom(size)}`
   }
-
-  for (let i = 0; i < objs.length; i++) {
-    size += objs[i].size
-  }
-  console.log(meta)
-  meta.innerHTML = `${objs.length} items found - ${sizeDenom(size)}`
 }
 
 const newDir = function (dir) {
@@ -61,7 +72,7 @@ const newDir = function (dir) {
   const listItem = document.createElement('listItem')
   listItem.classList.add('list-group-item')
   listItem.innerHTML = `<span class="float-right f-delete">
-    <button type="button" onclick="removeDir(this.parentNode.parentNode, '${dir}')" class="close" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+    <button type="button" class="close" onclick="removeDirClick(event)" value="${dir}"><span aria-hidden="true" >&times;</span></button>
     </span>
     <p class="path">${dir}</p>
     <p class="f-meta">...</p>`
@@ -262,21 +273,48 @@ const start = function () {
   process.start()
 }
 
+const prepareModal = function () {
+  const modal = document.querySelector('.modal')
+  const body = document.querySelector('body')
+
+  document.querySelector('.modal-close').addEventListener('click', (e) => {
+    modal.classList.add('hidden')
+    body.classList.remove('modal-open')
+    document.querySelector('.modal-body').innerHTML = null
+    document.querySelector('.modal-title').innerHTML = null
+  })
+
+  // document.querySelector('.modal').addEventListener('click', function (e) {
+  //   if (e.target !== modal && e.target !== container) return
+  //   modal.classList.add('hidden')
+  // })
+}
+
 const ready = function () {
   prepDrop()
   prepOpenscad()
   prepColor()
   prepOutput()
   prepGenerate()
+  prepareModal()
+}
+
+const customError = function (e, url, line) {
+  console.log(e, url, line)
+  console.log(e.stack)
+  // Check if error is already in progress, if so, append to current box
+  const modal = document.querySelector('.modal')
+  document.querySelector('.modal-title').innerHTML = 'Unexpected error has occured'
+  const modalBody = document.querySelector('.modal-body')
+  const alert = `<div class="alert alert-danger" role="alert">${e}<br>${url}<br>${line}</div>`
+  modalBody.innerHTML = modalBody.innerHTML + alert
+
+  document.querySelector('body').classList.add('modal-open')
+  modal.classList.remove('hidden')
 }
 
 document.addEventListener('DOMContentLoaded', ready)
 
-// process.on('uncaughtException', (err) => {
-//   const messageBoxOptions = {
-//     type: 'error',
-//     title: 'Error in Main process',
-//     message: 'Something failed'
-//   }
-//   throw err
-// })
+window.onerror = function (e, url, line) {
+  customError(e, url, line)
+}

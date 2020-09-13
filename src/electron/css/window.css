@@ -238,5 +238,12 @@ hr {
 	width: 200px;
 	height: 200px;
 	border: 2px solid black;
+}
 
+.modal {
+	display: block !important;
+}
+
+.modal.hidden {
+	display: none !important;
 }
