@@ -2,7 +2,7 @@ let window
 
 const { app, BrowserWindow } = require('electron')
 const path = require('path')
-const isMac = (process.platform === 'darwin')
+// const isMac = (process.platform === 'darwin')
 
 async function createWindow (window) {
   window = new BrowserWindow({

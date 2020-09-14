@@ -1,7 +1,9 @@
 const fs = require('fs')
 const path = require('path')
 const Openscad = require('../lib/openscad')
+const ThreeD = require('../lib/threed')
 const mkdirp = require('mkdirp')
+const async = require('async')
 
 class Process {
   constructor (conf, dirs, window) {
@@ -43,44 +45,83 @@ class Process {
       'D:\\Desktop\\STL Temp TEst\\Dragonlionne_WHOLE.stl',
       'D:\\Desktop\\STL Temp TEst\\DragonTurtle'
     ]
-    conf.scadExe = 'C:\\Program Files\\OpenSCAD\\openscad.exe'
+    this.scad = conf.scad
+    this.scadExe = 'C:\\Program Files\\OpenSCAD\\openscad.exe'
+    this.process = conf.process
     this.dirs = dirs
     this.window = window
-    this.conf = conf
 
-    const scad = new Openscad(conf.scadExe)
-    this.conf.scadExe = scad.validateExe()
+    const imgW = Math.floor(
+      this.process.outputW / this.process.columns
+    )
 
-    const imgW = Math.floor(this.conf.outputW / this.conf.stitchColumns)
-    this.conf.imgW = imgW
-    this.conf.imgH = imgW
-    this.conf.outputW = imgW * this.conf.stitchColumns
+    this.scad.w = imgW
+    this.scad.h = imgW
+    this.process.outputW = imgW * this.process.stitchColumns
 
-    console.log(this.conf)
+  }
+
+  initGen (objs, scad) {
+    const images = {}
+    return new Promise((resolve, reject) => {
+      async.forEachOfLimit(objs, this.process.maxProcess,
+        async (obj, key) => {
+          const image = await obj.generateImage(null, scad, this.scad)
+          images[key] = image
+        }, (err) => {
+          if (err) reject(err)
+          resolve(images)
+        })
+    })
+  }
+
+  async overview (dir) {
+    // Get all objects from folder
+    const scad = new Openscad(this.scadExe, this.scad)
+
+    const files = ThreeD.getObjs(
+      dir, this.process.recur,
+      this.process.imgsSortedBy
+    )
+
+    // Cut array to imgsMax size
+    if (files.length > this.process.imgsMax &&
+    this.process.imgsMax !== 0) {
+      const cut = files.length - this.process.imgsMax
+      files.splice(this.process.imgsMax, cut)
+    }
+
+    const time = new Date().getTime()
+    console.log("get here")
+    const images = await this.initGen(files, scad)
+    console.log(`getting all took ${new Date().getTime() - time}`)
+    console.log("and here")
+  }
+
+  async start () {
+    console.log("hi?")
+    this.overview(this.dirs[1])
   }
 
   outputLocation (dir, createFolder = false) {
     let output
 
-    if (this.conf.scadOutputAbsolute) {
-      output = this.conf.scadOutputName
+    if (this.c.scadOutputAbsolute) {
+      output = this.c.scadOutputName
     } else {
       if (fs.statSync(dir).isFile()) {
         dir = path.parse(dir).dir
       };
-      output = path.resolve(dir, this.conf.scadOutputName)
+      output = path.resolve(dir, this.c.scadOutputName)
     }
 
     if (createFolder) {
-      mkdirp.sync(this.conf.scadOutputName)
+      mkdirp.sync(this.c.scadOutputName)
     }
     return output
   }
 
   outputName (stl) {
-  }
-
-  async start () {
   }
 }
 

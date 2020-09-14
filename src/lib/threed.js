@@ -43,20 +43,18 @@ class ThreeD {
 
 	static getObjs = function (dir, recur = true, sortedBy) {
 		if (path.parse(dir).ext) {
-			let obj = this.getChildInstance(dir);
+			let obj = this.getChildInstance(dir)
 			return (obj) ? [obj] : false;
 		} else {
-			let objs = this.getObjsFolder(dir, recur);
+			let objs = this.getObjsFolder(dir, recur)
 
 			if (sortedBy === 'size') {
-				objs.sort((a,b) => {
-					return b.size - a.size;
-				});
+				objs.sort((a,b) => { return b.size - a.size })
 			} else if(sortedBy === 'random') {
 				// https://stackoverflow.com/questions/2450954/how-to-randomize-shuffle-a-javascript-array
 				for (let i = objs.length - 1; i > 0; i--) {
-					const j = Math.floor(Math.random() * (i + 1));
-					[objs[i], objs[j]] = [objs[j], objs[i]];
+					const j = Math.floor(Math.random() * (i + 1))
+					[objs[i], objs[j]] = [objs[j], objs[i]]
 				}
 			}
 

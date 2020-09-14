@@ -2,6 +2,7 @@ const path = require('path')
 const fs = require('fs')
 const child = require('child_process')
 const os = require('os')
+const Jimp = require('jimp')
 
 class Openscad {
   constructor (exe, flags) {
@@ -27,7 +28,7 @@ class Openscad {
   prepareFlags (impFile, output, settings) {
     const flags = [
       `-o${output}`,
-      `--imgsize=${settings.w},${settings.h}`,
+      `--imgsize=${settings.w * 2},${settings.h * 2}`,
       `--colorscheme=${this.flags.colorscheme}`,
       impFile
     ]
@@ -36,7 +37,6 @@ class Openscad {
     if (this.flags.viewall) { flags.push('--viewall') }
     if (this.flags.fullrender) { flags.push('--render') }
     if (this.flags.ortho) { flags.push('--projection=o') }
-
     return flags
   }
 
@@ -59,7 +59,70 @@ class Openscad {
     return impFile
   }
 
-  async generateImage (output = false, threed, settings) {
+  async resizeAndZoom (loc, settings) {
+    // return new Promise((resolve, reject) => {
+    //   Jimp.read(loc)
+    //     .then(img => {
+    //       const cropX = img.bitmap.width * 0.1
+    //       const cropY = img.bitmap.height * 0.1
+    //       const cropW = img.bitmap.width * 0.8
+    //       const cropH = img.bitmap.height * 0.8
+    //       return img
+    //         .crop(cropX, cropY, cropW, cropH)
+    //         .resize(settings.w, settings.h, Jimp.RESIZE_BICUBIC)
+    //         .write(loc)
+    //         .then(() => {
+    //           resolve()
+    //         })
+    //     }).catch(e => reject(e))
+    // })
+
+    // await Jimp.read(loc, (err, img) => {
+    //   if (err) throw err
+    //   img
+    //     .crop(
+    //       img.bitmap.width * 0.1, // x crop start
+    //       img.bitmap.height * 0.1, // y crop start
+    //       img.bitmap.width * 0.8, // w total
+    //       img.bitmap.height * 0.8 // h total
+    //     )
+    //     .resize(settings.w, settings.h, Jimp.RESIZE_BICUBIC)
+    //     .write(loc)
+    // })
+
+    return new Promise((resolve, reject) => {
+      Jimp.read(loc)
+        .then(img => {
+          return img
+            .crop(
+              img.bitmap.width * 0.1, // x crop start
+              img.bitmap.height * 0.1, // y crop start
+              img.bitmap.width * 0.8, // w total
+              img.bitmap.height * 0.8 // h total
+            )
+            .resize(settings.w, settings.h, Jimp.RESIZE_BICUBIC)
+            .write(loc)
+        })
+        .then(() => {
+          resolve()
+        })
+        .catch(e => reject(e))
+      // , (err, img) => {
+      //   if (err) throw err
+      //   img
+      //     .crop(
+      //       img.bitmap.width * 0.1, // x crop start
+      //       img.bitmap.height * 0.1, // y crop start
+      //       img.bitmap.width * 0.8, // w total
+      //       img.bitmap.height * 0.8 // h total
+      //     )
+      //     .resize(settings.w, settings.h, Jimp.RESIZE_BICUBIC)
+      //     .write(loc)
+      // })
+    })
+  }
+
+  generateImage (output = false, threed, settings) {
     return new Promise((resolve, reject) => {
       if (!output) {
         output = path.join(this.tempDir, Openscad.randomUnique() + '.png')
@@ -70,8 +133,12 @@ class Openscad {
       const flags = this.prepareFlags(impFile, output, settings)
 
       const thread = child.spawn(this.exe, flags)
-      thread.on('close', (code) => {
+      thread.on('close', async (code) => {
         if (code === 0) {
+          let time = new Date().getTime()
+
+          await this.resizeAndZoom(output, settings)
+          console.log(`took: ${new Date().getTime() - time}`)
           resolve(output)
         } else {
           reject(new Error(`spawn came back with error code ${code}`))
