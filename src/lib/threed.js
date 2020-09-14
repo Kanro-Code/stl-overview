@@ -12,8 +12,8 @@ class ThreeD {
 		if (!settings.w)
 			settings.w = 800;
 
-		output = await scad.generateImage(output, this, settings);
-		return output;
+		this.image = await scad.generateImage(output, this, settings);
+		return this.image;
 	}
 
 	static getChildInstance = function(file) {

@@ -21,8 +21,9 @@ async function createWindow (window) {
 
   window.once('ready-to-show', window.show)
   window.loadFile(path.join(__dirname, 'index.html'))
-  // window.webContents.openDevTools()
   window.webContents.openDevTools()
+
+
 }
 
 app.whenReady().then(() => {
@@ -37,3 +38,4 @@ app.whenReady().then(() => {
 app.on('window-all-closed', () => {
   app.quit()
 })
+

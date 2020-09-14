@@ -25,12 +25,12 @@ class Openscad {
     return (output.status === 0) ? this.exe : false
   };
 
-  prepareFlags (impFile, output, settings) {
+  prepareFlags (importFile, output, conf) {
     const flags = [
       `-o${output}`,
-      `--imgsize=${settings.w * 2},${settings.h * 2}`,
+      `--imgsize=${conf.w * 2},${conf.h * 2}`,
       `--colorscheme=${this.flags.colorscheme}`,
-      impFile
+      importFile
     ]
 
     if (this.flags.autocenter) { flags.push('--autocenter') }
@@ -47,118 +47,61 @@ class Openscad {
   }
 
   createImport (origin) {
-    const impFile = path.join(this.tempDir, Openscad.randomUnique())
+    const importFile = path.join(this.tempDir, Openscad.randomUnique())
 
     // Create important command, making sure path is posix compatible
     // --> posix needed due to openscad weirdness
     origin = origin.split(path.sep).join(path.posix.sep)
 
     const importCommand = `import("${origin}", convexity=10 );`
-    fs.writeFileSync(impFile, importCommand)
+    fs.writeFileSync(importFile, importCommand)
 
-    return impFile
+    return importFile
   }
 
-  async resizeAndZoom (loc, settings) {
-    // return new Promise((resolve, reject) => {
-    //   Jimp.read(loc)
-    //     .then(img => {
-    //       const cropX = img.bitmap.width * 0.1
-    //       const cropY = img.bitmap.height * 0.1
-    //       const cropW = img.bitmap.width * 0.8
-    //       const cropH = img.bitmap.height * 0.8
-    //       return img
-    //         .crop(cropX, cropY, cropW, cropH)
-    //         .resize(settings.w, settings.h, Jimp.RESIZE_BICUBIC)
-    //         .write(loc)
-    //         .then(() => {
-    //           resolve()
-    //         })
-    //     }).catch(e => reject(e))
-    // })
-
-    // await Jimp.read(loc, (err, img) => {
-    //   if (err) throw err
-    //   img
-    //     .crop(
-    //       img.bitmap.width * 0.1, // x crop start
-    //       img.bitmap.height * 0.1, // y crop start
-    //       img.bitmap.width * 0.8, // w total
-    //       img.bitmap.height * 0.8 // h total
-    //     )
-    //     .resize(settings.w, settings.h, Jimp.RESIZE_BICUBIC)
-    //     .write(loc)
-    // })
-
-    return new Promise((resolve, reject) => {
-      Jimp.read(loc)
-        .then(img => {
-          return img
-            .crop(
-              img.bitmap.width * 0.1, // x crop start
-              img.bitmap.height * 0.1, // y crop start
-              img.bitmap.width * 0.8, // w total
-              img.bitmap.height * 0.8 // h total
-            )
-            .resize(settings.w, settings.h, Jimp.RESIZE_BICUBIC)
-            .write(loc)
-        })
-        .then(() => {
-          resolve()
-        })
-        .catch(e => reject(e))
-      // , (err, img) => {
-      //   if (err) throw err
-      //   img
-      //     .crop(
-      //       img.bitmap.width * 0.1, // x crop start
-      //       img.bitmap.height * 0.1, // y crop start
-      //       img.bitmap.width * 0.8, // w total
-      //       img.bitmap.height * 0.8 // h total
-      //     )
-      //     .resize(settings.w, settings.h, Jimp.RESIZE_BICUBIC)
-      //     .write(loc)
-      // })
-    })
+  async resizeAndZoom (loc, conf) {
+    try {
+      const img = await Jimp.read(loc)
+      img
+        .crop(img.bitmap.width * 0.1, // x crop start
+          img.bitmap.height * 0.1, // y crop start
+          img.bitmap.width * 0.8, // w total
+          img.bitmap.height * 0.8) // h total
+        .resize(conf.w, conf.h, Jimp.RESIZE_BICUBIC)
+        .write(loc)
+      return loc
+    } catch (e) {
+      if (e) throw e
+    }
   }
 
-  generateImage (output = false, threed, settings) {
-    return new Promise((resolve, reject) => {
-      if (!output) {
-        output = path.join(this.tempDir, Openscad.randomUnique() + '.png')
-      }
+  async generateImage (output = false, file, conf) {
+    if (!output) output = this.tempFile()
 
-      const location = threed.location
-      const impFile = this.createImport(location)
-      const flags = this.prepareFlags(impFile, output, settings)
+    const importFile = this.createImport(file.location)
+    const flags = this.prepareFlags(importFile, output, conf)
+    const thread = child.spawnSync(this.exe, flags)
 
-      const thread = child.spawn(this.exe, flags)
-      thread.on('close', async (code) => {
-        if (code === 0) {
-          let time = new Date().getTime()
+    if (thread.status !== 0) {
+      throw new Error(`openscad error exit ${thread.status} - ${thread.output[2].toString()}`)
+    }
 
-          await this.resizeAndZoom(output, settings)
-          console.log(`took: ${new Date().getTime() - time}`)
-          resolve(output)
-        } else {
-          reject(new Error(`spawn came back with error code ${code}`))
-        }
-      })
-    })
+    const loc = await this.resizeAndZoom(output, conf)
+    return loc
   }
 
   clearTempDir () {
-    try {
-      const files = fs.readdirSync(this.tempDir)
+    const files = fs.readdirSync(this.tempDir)
 
-      files.forEach(file => {
-        fs.unlinkSync(path.join(this.tempDir, file))
+    files.forEach(file => {
+      fs.unlink(path.join(this.tempDir, file), (e) => {
+        if (e) throw e
       })
+    })
+  }
 
-      return true
-    } catch (e) {
-      return false
-    }
+  tempFile () {
+    return path.join(this.tempDir, Openscad.randomUnique() + '.png')
   }
 
   set exe (exe) {

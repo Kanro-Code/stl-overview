@@ -239,7 +239,7 @@ const pullSettings = function () {
       outputW: parseInt(pullValueId('outputW')),
       columns: parseInt(pullValueId('stitchColumns')),
       createSinglePreview: pullValueCheck('imgsKeepPreview'),
-      maxProcess: pullValueId('maxProcess')
+      maxProcess: parseInt(pullValueId('maxProcess'))
     }
   }
 
