@@ -62,6 +62,7 @@ class Openscad {
   async resizeAndZoom (loc, conf) {
     try {
       const img = await Jimp.read(loc)
+      console.log('resizing: ' + path.parse(loc).base)
       img
         .crop(img.bitmap.width * 0.1, // x crop start
           img.bitmap.height * 0.1, // y crop start
@@ -69,8 +70,10 @@ class Openscad {
           img.bitmap.height * 0.8) // h total
         .resize(conf.w, conf.h, Jimp.RESIZE_BICUBIC)
         .write(loc)
+      console.log('DONE resizing: ' + path.parse(loc).base)
       return loc
     } catch (e) {
+      console.log(e)
       if (e) throw e
     }
   }
@@ -78,13 +81,16 @@ class Openscad {
   async generateImage (output = false, file, conf) {
     if (!output) output = this.tempFile()
 
+    console.log('generating: ' + path.parse(file.location).base)
     const importFile = this.createImport(file.location)
     const flags = this.prepareFlags(importFile, output, conf)
-    const thread = child.spawnSync(this.exe, flags)
+    // const thread = child.spawn(this.exe, flags)
+    const thread = child.execFileSync(this.exe, flags)
 
     if (thread.status !== 0) {
-      throw new Error(`openscad error exit ${thread.status} - ${thread.output[2].toString()}`)
+      throw new Error(`openscad error exit ${thread.status}`)
     }
+    console.log('DONE generating: ' + path.parse(file.location).base)
 
     const loc = await this.resizeAndZoom(output, conf)
     return loc
