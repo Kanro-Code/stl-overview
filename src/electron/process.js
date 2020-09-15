@@ -1,4 +1,3 @@
-const fs = require('fs')
 const path = require('path')
 const Openscad = require('../lib/openscad')
 const ThreeD = require('../lib/threed')
@@ -21,30 +20,33 @@ class Process {
     //   // "/Users/thijs/Dekstop/test.stl"
     // ]
 
+    // dirs = [
+    //   'D:\\Downloads\\torrents\\[3D Art Guy] Living Saint - May 2020',
+    //   'D:\\Downloads\\torrents\\[3D Art Guy] Marilith Demon - April 2020',
+    //   'D:\\Downloads\\torrents\\[3D Art Guy] Marilith normal - April 2020',
+    //   'D:\\Downloads\\torrents\\[3D Art Guy] Succubus Demon - April 2020',
+    //   'D:\\Downloads\\torrents\\[3D Forge] April 2019',
+    //   'D:\\Downloads\\torrents\\- Blindrune Cult',
+    //   'D:\\Downloads\\torrents\\ hobitonn Bonsay',
+    //   'D:\\Downloads\\torrents\\(Kickstarter - Mia Kay) Familiars and Beasts',
+    //   'D:\\Downloads\\torrents\\[3D Art Guy] Crusader Diorama',
+    //   'D:\\Downloads\\torrents\\[3D Art Guy] Dead Knight',
+    //   'D:\\Downloads\\torrents\\[3D Art Guy] GreatJaw Orc Fighter',
+    //   'D:\\Desktop\\STL Temp TEst\\Dragontaur\\Dragontaur_Arm.stl',
+    //   'D:\\Desktop\\STL Temp TEst\\Dragontaur\\Dragontaur_FINAL.stl',
+    //   'D:\\Desktop\\STL Temp TEst\\Dragontaur\\Dragontaur_Hand.stl',
+    //   'D:\\Desktop\\STL Temp TEst\\Dragontaur\\Dragontaur_WHOLE.stl',
+    //   'D:\\Desktop\\STL Temp TEst\\Dragonlionne_FINAL.stl',
+    //   'D:\\Desktop\\STL Temp TEst\\Dragonlionne_Head.stl',
+    //   'D:\\Desktop\\STL Temp TEst\\Dragonlionne_NoBase_WHOLE.stl',
+    //   'D:\\Desktop\\STL Temp TEst\\Dragonlionne_Peg.stl',
+    //   'D:\\Desktop\\STL Temp TEst\\Dragonlionne_Tail.stl',
+    //   'D:\\Desktop\\STL Temp TEst\\Dragonlionne_Tail2.stl',
+    //   'D:\\Desktop\\STL Temp TEst\\Dragonlionne_WHOLE.stl',
+    //   'D:\\Desktop\\STL Temp TEst\\DragonTurtle'
+    // ]
     dirs = [
-      'D:\\Downloads\\torrents\\[3D Art Guy] Living Saint - May 2020',
-      'D:\\Downloads\\torrents\\[3D Art Guy] Marilith Demon - April 2020',
-      'D:\\Downloads\\torrents\\[3D Art Guy] Marilith normal - April 2020',
-      'D:\\Downloads\\torrents\\[3D Art Guy] Succubus Demon - April 2020',
-      'D:\\Downloads\\torrents\\[3D Forge] April 2019',
-      'D:\\Downloads\\torrents\\- Blindrune Cult',
-      'D:\\Downloads\\torrents\\ hobitonn Bonsay',
-      'D:\\Downloads\\torrents\\(Kickstarter - Mia Kay) Familiars and Beasts',
-      'D:\\Downloads\\torrents\\[3D Art Guy] Crusader Diorama',
-      'D:\\Downloads\\torrents\\[3D Art Guy] Dead Knight',
-      'D:\\Downloads\\torrents\\[3D Art Guy] GreatJaw Orc Fighter',
-      'D:\\Desktop\\STL Temp TEst\\Dragontaur\\Dragontaur_Arm.stl',
-      'D:\\Desktop\\STL Temp TEst\\Dragontaur\\Dragontaur_FINAL.stl',
-      'D:\\Desktop\\STL Temp TEst\\Dragontaur\\Dragontaur_Hand.stl',
-      'D:\\Desktop\\STL Temp TEst\\Dragontaur\\Dragontaur_WHOLE.stl',
-      'D:\\Desktop\\STL Temp TEst\\Dragonlionne_FINAL.stl',
-      'D:\\Desktop\\STL Temp TEst\\Dragonlionne_Head.stl',
-      'D:\\Desktop\\STL Temp TEst\\Dragonlionne_NoBase_WHOLE.stl',
-      'D:\\Desktop\\STL Temp TEst\\Dragonlionne_Peg.stl',
-      'D:\\Desktop\\STL Temp TEst\\Dragonlionne_Tail.stl',
-      'D:\\Desktop\\STL Temp TEst\\Dragonlionne_Tail2.stl',
-      'D:\\Desktop\\STL Temp TEst\\Dragonlionne_WHOLE.stl',
-      'D:\\Desktop\\STL Temp TEst\\DragonTurtle'
+      'C:\\Torrent Temp\\3D Miniature Models - Mar 2020'
     ]
     this.conf = conf
     this.conf.scadExe = 'C:\\Program Files\\OpenSCAD\\openscad.exe'
@@ -63,70 +65,98 @@ class Process {
     this.scad = new Openscad(this.conf.scadExe, this.conf.scad)
   }
 
-  initGen (objs, scad) {
-    console.log(this.conf.process.maxProcess)
+  executeGen (file, key, callback) {
+    file.generateImage(null, this.scad, this.conf.scad)
+      .then(() => {
+        callback()
+      })
+  }
+
+  initGen (files) {
     return new Promise((resolve, reject) => {
-      async.forEachOfLimit(objs, this.conf.process.maxProcess,
-        (obj, key) => {
-          obj.generateImage(null, scad, this.conf.scad)
-            .then((loc) => {
-              resolve()
-            })
-        }, (err) => {
+      async.forEachOfLimit(
+        files,
+        this.conf.process.maxProcess,
+        this.executeGen.bind({
+          scad: this.scad,
+          conf: this.conf
+        }),
+        (err) => {
           if (err) reject(err)
           resolve()
         })
     })
   }
 
-  async overview (dir) {
-    // Get all objects from folder
-
+  getFilesAndTrim (dir) {
     const files = ThreeD.getObjs(
       dir, this.conf.process.recur,
       this.conf.process.imgsSortedBy
     )
 
     // Cut array to imgsMax size
-    if (files.length > this.conf.process.imgsMax &&
-    this.conf.process.imgsMax !== 0) {
-      const cut = files.length - this.conf.process.imgsMax
-      files.splice(this.conf.process.imgsMax, cut)
+    if (this.conf.process.imgsMax !== 0) {
+      files.splice(this.conf.process.imgsMax, files.length)
     }
 
-    const time = new Date().getTime()
-    await this.initGen(files, this.scad)
-    console.log(`getting all took ${new Date().getTime() - time}`)
+    return files
+  }
 
-    //time to stitch
-    const stitch = new Stitch(files, this.conf)
-    console.log(stitch)
+  async generateScad (dir) {
+    // Get all objects from folder
+    const files = this.getFilesAndTrim(dir)
+    console.log(files)
+
+    const time = new Date().getTime()
+    await this.initGen(files)
+    console.log(`getting all took ${new Date().getTime() - time}`)
+    return files
+
+  }
+
+  async stitch(files) {
 
   }
 
   async start () {
-    this.overview(this.dirs[1])
+    const collection = []
+
+    for (let i = 0; i < this.dirs.length; i++) {
+      const threeds = await this.generateScad(this.dirs[i])
+      const stitch = new Stitch(
+        threeds,
+        this.outputLocation(this.dirs[i], true),
+        this.conf
+      )
+
+      collection.push(stitch)
+    }
+
+    console.log(collection)
+  }
+
+  outputName (dir) {
+    const parse = path.parse(dir)
+    console.log(parse)
+
+    return 'hi'
+    // /test/deasd/adasdasd/foldername - returns foldername.png
+
+    // /asdasd/asd/asd/asd/asd/asd/something.stl return something.png
+
   }
 
   outputLocation (dir, createFolder = false) {
-    let output
-
-    if (this.c.scadOutputAbsolute) {
-      output = this.c.scadOutputName
+    const confLoc = this.conf.process.outputLocation
+    if (path.isAbsolute(confLoc)) {
+      mkdirp.sync(confLoc)
+      return path.join(confLoc, this.outputName(dir))
     } else {
-      if (fs.statSync(dir).isFile()) {
-        dir = path.parse(dir).dir
-      };
-      output = path.resolve(dir, this.c.scadOutputName)
+      let folder = path.resolve(dir, confLoc)
+      mkdirp.sync(folder)
+      return path.join(folder, this.outputName(dir))
     }
 
-    if (createFolder) {
-      mkdirp.sync(this.c.scadOutputName)
-    }
-    return output
-  }
-
-  outputName (stl) {
   }
 }
 

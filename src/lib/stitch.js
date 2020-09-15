@@ -3,15 +3,33 @@ const path = require('path')
 const async = require('async')
 
 class Stitch {
-  constructor (images, conf) {
+  constructor (threeds, output, conf) {
     console.log(conf)
-    this.images = images
+    this.threeds = threeds
     this.conf = conf
     this.imgH = this.conf.scad.h
     this.imgW = this.conf.scad.w
     this.columns = this.conf.process.columns
-    this.calcSizes()
-    console.log(this)
+    // this.calcSizes()
+  }
+
+  async resizeAndZoom (loc, conf) {
+    try {
+      const img = await Jimp.read(loc)
+      console.log('resizing: ' + path.parse(loc).base)
+      img
+        .crop(img.bitmap.width * 0.1, // x crop start
+          img.bitmap.height * 0.1, // y crop start
+          img.bitmap.width * 0.8, // w total
+          img.bitmap.height * 0.8) // h total
+        .resize(conf.w, conf.h, Jimp.RESIZE_BICUBIC)
+        .write(loc)
+      console.log('DONE resizing: ' + path.parse(loc).base)
+      return loc
+    } catch (e) {
+      console.log(e)
+      if (e) throw e
+    }
   }
 
   calcSizes () {

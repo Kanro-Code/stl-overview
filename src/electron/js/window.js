@@ -244,11 +244,11 @@ const pullSettings = function () {
   }
 
   if (pullValueRadio('outputLocation') === 'outputRelative') {
-    conf.process.scadOutputName = pullValueId('outputRelative')
-    conf.process.scadOutputAbsolute = false
+    conf.process.outputLocation = pullValueId('outputRelative')
+    // conf.process.scadOutputAbsolute = false
   } else {
-    conf.process.scadOutputName = pullValueId('outputLocationAbsolute')
-    conf.process.scadOutputAbsolute = true
+    conf.process.outputLocation = pullValueId('outputLocationAbsolute')
+    // conf.process.scadOutputAbsolute = true
   }
 
   return conf
