@@ -1,16 +1,20 @@
 const Jimp = require('jimp')
 const path = require('path')
+const mkdirp = require('mkdirp')
 const async = require('async')
+const fs = require('fs')
 
 class Stitch {
-  constructor (threeds, output, conf) {
-    console.log(conf)
-    this.threeds = threeds
+  constructor (files, output, conf) {
+    this.files = files
     this.conf = conf
     this.imgH = this.conf.scad.h
     this.imgW = this.conf.scad.w
     this.columns = this.conf.process.columns
-    // this.calcSizes()
+    this.output = output
+    this.calcSizes()
+
+    mkdirp.sync(output)
   }
 
   async resizeAndZoom (loc, conf) {
@@ -33,18 +37,84 @@ class Stitch {
   }
 
   calcSizes () {
-    if (this.images.length > this.columns) {
+    if (this.files.length > this.columns) {
       this.w = this.imgW * this.columns
     } else {
-      this.w = this.imgW * this.images.length
+      this.w = this.imgW * this.files.length
     }
     this.h = Math.ceil(
-      this.images.length / this.columns
+      this.files.length / this.columns
     ) * this.imgH
+  }
+
+  compositeSingle (panel, file, key, callback) {
+    let image = file.image
+    console.log(image)
+    Jimp.read(image)
+      .then(image => {
+        console.log(image)
+      }).catch(err => { throw err })
+
+    // compositeSingle (panel, file, key, callback) {
+    //   const img = file.image
+    //   console.log(file)
+    //   return Jimp.read(img, (err, img) => {
+    //     if (err) throw err
+    //     console.log('hi')
+    //     img.resize(this.imgW, this.imgH, Jimp.RESIZE_BICUBIC)
+    //     panel.composite(img, 0, 0)
+    //     console.log(panel)
+    //     callback()
+    //   })
+    // }
+    // let test = await Jimp.read(image)
+    //   .resize(this.imgW, this.imgH, Jimp.RESIZE_BICUBIC)
+      
+    // Jimp.read(file.image)
+    //   .then(image => {
+    //     console.log('hi')
+    //     return this.resizeImage(image)
+    //   })
+    //   .then(image => {
+    //     console.log(image)
+    //   }).catch(err => {
+    //     throw err
+    //   })
+    // this.loadImage(file)
+    //   .then((image) => {
+    //     console.log(key)
+
+    //     this.resizeImage(image)
+    //     panel.composite(image, 0, 0)
+    //     // panel.composite(image, this.getXCoor(key), this.getYCoor(key))
+
+    //     callback()
+    //   })
+    //   .catch(err => { throw err })
+  }
+
+  compositeImages (panel) {
+    return new Promise((resolve, reject) => {
+      async.forEachOfLimit(
+        this.files,
+        32,
+        this.compositeSingle.bind(this, {panel: panel}),
+        (err) => {
+          if (err) reject(err)
+          resolve()
+        }
+      )
+    })
   }
 
   async init () {
     var panel = new Jimp(this.w, this.h, '#000000')
+    await this.compositeImages(panel)
+    console.log(this.output)
+
+    await panel.write(this.output)
+
+    console.log(panel)
   }
 }
 

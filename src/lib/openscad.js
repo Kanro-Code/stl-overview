@@ -60,19 +60,19 @@ class Openscad {
   }
 
   async generateImage (output = false, file, conf) {
-    // return new Promise((resolve, reject) => {
     if (!output) output = this.tempFile()
 
-    // console.log('generating: ' + path.parse(file.location).base)
     const importFile = this.createImport(file.location)
     const flags = this.prepareFlags(importFile, output, conf)
 
     try {
-      console.log(`starting ${file.location}`)
       await execa(this.exe, flags)
-      console.log(`finished ${file.location}`)
     } catch (err) {
-      console.error(err)
+      console.error('Something went wrong with rendering file:')
+      console.error(file)
+      console.error(conf)
+      console.error(output)
+      throw err
     }
 
     return output
