@@ -68,13 +68,17 @@ class Openscad {
 
     const thread = execa(this.exe, flags, { cwd: this.tempDir })
 
-    setTimeout(() => {
-      console.log(`Something went wrong with rendering: ${file.location}`)
-      thread.cancel()
-    }, 60000)
+    // setTimeout(() => {
+    //   console.log(thread)
+    //   console.log(`Something went wrong with rendering: ${file.location}`)
+    //   thread.cancel()
+    // }, 10000)
 
     try {
-      await thread
+      let result = await thread
+      if (result.exitCode !== 0) {
+        throw new Error('openscad exited with non-0 code')
+      }
     } catch (err) {
       console.error('Something went wrong with rendering file:')
       console.error(file)

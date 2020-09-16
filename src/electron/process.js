@@ -6,18 +6,18 @@ const async = require('async')
 
 class Process {
   constructor (conf, dirs, window) {
-    // dirs = [
-    //   '/Users/thijs/Downloads/All Pokemon',
-    //   '/Users/thijs/Downloads/April',
-    //   '/Users/thijs/Downloads/DT+-+CRD+Objective+marker',
-    //   '/Users/thijs/Downloads/Marko - Sol Justicar',
-    //   '/Users/thijs/Downloads/Mechs',
-    //   '/Users/thijs/Downloads/Vulpeana Whitebranch',
-    //   '/Users/thijs/Downloads/Lazy+Grid+Clock',
-    //   '/Users/thijs/Downloads/Lazy+Grid+Clock (1)',
-    //   '/Users/thijs/Downloads/tools-modular-desktop-stand-tweezerplierscrewdriver-v-20-model_files'
-    //   // "/Users/thijs/Dekstop/test.stl"
-    // ]
+    dirs = [
+      '/Users/thijs/Downloads/All Pokemon',
+      '/Users/thijs/Downloads/April',
+      '/Users/thijs/Downloads/DT+-+CRD+Objective+marker',
+      '/Users/thijs/Downloads/Marko - Sol Justicar',
+      '/Users/thijs/Downloads/Mechs',
+      '/Users/thijs/Downloads/Vulpeana Whitebranch',
+      '/Users/thijs/Downloads/Lazy+Grid+Clock',
+      '/Users/thijs/Downloads/Lazy+Grid+Clock (1)',
+      '/Users/thijs/Downloads/tools-modular-desktop-stand-tweezerplierscrewdriver-v-20-model_files',
+      '/Users/thijs/Dekstop/test.stl'
+    ]
 
     // dirs = [
     //   'D:\\Downloads\\torrents\\[3D Art Guy] Living Saint - May 2020',
@@ -48,8 +48,8 @@ class Process {
     // 'C:\\Torrent Temp\\3D Miniature Models - Mar 2020'
     // ]
     this.conf = conf
-    this.conf.scadExe = 'C:\\Program Files\\OpenSCAD\\openscad.exe'
-    // this.conf.scadExe = '/Applications/OpenSCAD.app'
+    // this.conf.scadExe = 'C:\\Program Files\\OpenSCAD\\openscad.exe'
+    this.conf.scadExe = '/Applications/OpenSCAD.app'
 
     this.dirs = dirs
     this.window = window
