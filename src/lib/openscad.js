@@ -47,7 +47,8 @@ class Openscad {
   }
 
   createImport (origin) {
-    const importFile = path.join(this.tempDir, Openscad.randomUnique())
+    const importName = Openscad.randomUnique()
+    const importFile = path.join(this.tempDir, importName)
 
     // Create important command, making sure path is posix compatible
     // --> posix needed due to openscad weirdness
@@ -56,7 +57,7 @@ class Openscad {
     const importCommand = `import("${origin}" );`
     fs.writeFileSync(importFile, importCommand)
 
-    return importFile
+    return importName
   }
 
   async generateImage (output = false, file, conf) {
@@ -65,8 +66,15 @@ class Openscad {
     const importFile = this.createImport(file.location)
     const flags = this.prepareFlags(importFile, output, conf)
 
+    const thread = execa(this.exe, flags, { cwd: this.tempDir })
+
+    setTimeout(() => {
+      console.log(`Something went wrong with rendering: ${file.location}`)
+      thread.cancel()
+    }, 60000)
+
     try {
-      await execa(this.exe, flags)
+      await thread
     } catch (err) {
       console.error('Something went wrong with rendering file:')
       console.error(file)

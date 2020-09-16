@@ -19,31 +19,31 @@ class Process {
     //   // "/Users/thijs/Dekstop/test.stl"
     // ]
 
-    dirs = [
-      // 'D:\\Downloads\\torrents\\[3D Art Guy] Living Saint - May 2020',
-      // 'D:\\Downloads\\torrents\\[3D Art Guy] Marilith Demon - April 2020',
-      // 'D:\\Downloads\\torrents\\[3D Art Guy] Marilith normal - April 2020',
-      // 'D:\\Downloads\\torrents\\[3D Art Guy] Succubus Demon - April 2020',
-      // 'D:\\Downloads\\torrents\\[3D Forge] April 2019',
-      // 'D:\\Downloads\\torrents\\- Blindrune Cult',
-      // 'D:\\Downloads\\torrents\\ hobitonn Bonsay',
-      // 'D:\\Downloads\\torrents\\(Kickstarter - Mia Kay) Familiars and Beasts',
-      // 'D:\\Downloads\\torrents\\[3D Art Guy] Crusader Diorama',
-      // 'D:\\Downloads\\torrents\\[3D Art Guy] Dead Knight',
-      'D:\\Desktop\\STL Temp TEst\\Dragontaur\\Dragontaur_Arm.stl',
-      'D:\\Desktop\\STL Temp TEst\\Dragontaur\\Dragontaur_FINAL.stl',
-      'D:\\Desktop\\STL Temp TEst\\Dragontaur\\Dragontaur_Hand.stl',
-      'D:\\Desktop\\STL Temp TEst\\Dragontaur\\Dragontaur_WHOLE.stl',
-      'D:\\Desktop\\STL Temp TEst\\Dragonlionne_FINAL.stl',
-      'D:\\Desktop\\STL Temp TEst\\Dragonlionne_Head.stl',
-      'D:\\Desktop\\STL Temp TEst\\Dragonlionne_NoBase_WHOLE.stl',
-      'D:\\Desktop\\STL Temp TEst\\Dragonlionne_Peg.stl',
-      'D:\\Desktop\\STL Temp TEst\\Dragonlionne_Tail.stl',
-      'D:\\Desktop\\STL Temp TEst\\Dragonlionne_Tail2.stl',
-      'D:\\Desktop\\STL Temp TEst\\Dragonlionne_WHOLE.stl',
-      'D:\\Desktop\\STL Temp TEst\\DragonTurtle',
-      // 'D:\\Downloads\\torrents\\[3D Art Guy] GreatJaw Orc Fighter'
-    ]
+    // dirs = [
+    //   'D:\\Downloads\\torrents\\[3D Art Guy] Living Saint - May 2020',
+    //   'D:\\Downloads\\torrents\\[3D Art Guy] Marilith Demon - April 2020',
+    //   'D:\\Downloads\\torrents\\[3D Art Guy] Marilith normal - April 2020',
+    //   'D:\\Downloads\\torrents\\[3D Art Guy] Succubus Demon - April 2020',
+    //   'D:\\Downloads\\torrents\\[3D Forge] April 2019',
+    //   'D:\\Downloads\\torrents\\- Blindrune Cult',
+    //   'D:\\Downloads\\torrents\\ hobitonn Bonsay',
+    //   'D:\\Downloads\\torrents\\(Kickstarter - Mia Kay) Familiars and Beasts',
+    //   'D:\\Downloads\\torrents\\[3D Art Guy] Crusader Diorama',
+    //   'D:\\Downloads\\torrents\\[3D Art Guy] Dead Knight',
+    //   'D:\\Desktop\\STL Temp TEst\\Dragontaur\\Dragontaur_Arm.stl',
+    //   'D:\\Desktop\\STL Temp TEst\\Dragontaur\\Dragontaur_FINAL.stl',
+    //   'D:\\Desktop\\STL Temp TEst\\Dragontaur\\Dragontaur_Hand.stl',
+    //   'D:\\Desktop\\STL Temp TEst\\Dragontaur\\Dragontaur_WHOLE.stl',
+    //   'D:\\Desktop\\STL Temp TEst\\Dragonlionne_FINAL.stl',
+    //   'D:\\Desktop\\STL Temp TEst\\Dragonlionne_Head.stl',
+    //   'D:\\Desktop\\STL Temp TEst\\Dragonlionne_NoBase_WHOLE.stl',
+    //   'D:\\Desktop\\STL Temp TEst\\Dragonlionne_Peg.stl',
+    //   'D:\\Desktop\\STL Temp TEst\\Dragonlionne_Tail.stl',
+    //   'D:\\Desktop\\STL Temp TEst\\Dragonlionne_Tail2.stl',
+    //   'D:\\Desktop\\STL Temp TEst\\Dragonlionne_WHOLE.stl',
+    //   'D:\\Desktop\\STL Temp TEst\\DragonTurtle',
+    //   'D:\\Downloads\\torrents\\[3D Art Guy] GreatJaw Orc Fighter'
+    // ]
     // dirs = [
     // 'C:\\Torrent Temp\\3D Miniature Models - Mar 2020'
     // ]
@@ -126,11 +126,12 @@ class Process {
     for (let i = 0; i < this.dirs.length; i++) {
       const threeds = await this.generateScad(this.dirs[i])
       await this.stitch(threeds, this.dirs[i])
+      console.log(`completed ${this.dirs[i]}`)
     }
   }
 
   outputName (dir) {
-    return path.parse(dir).name
+    return path.parse(dir).name + '.png'
   }
 
   outputFolder (dir) {

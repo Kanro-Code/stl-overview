@@ -29,12 +29,10 @@ const removeDirClick = function (e) {
 const removeDir = function (dir) {
   for (var i = currentFiles.length - 1; i >= 0; i--) {
     if (currentFiles[i] === dir) {
-      console.log('deleting')
       currentFiles.splice(i, 1)
       break
     }
   }
-  console.log(currentFiles)
 }
 
 const sizeDenom = function (number) {
@@ -60,7 +58,6 @@ const appendMeta = async function (listItem, dir) {
     for (let i = 0; i < objs.length; i++) {
       size += objs[i].size
     }
-    console.log(meta)
     meta.innerHTML = `${objs.length} items found - ${sizeDenom(size)}`
   }
 }
@@ -200,9 +197,16 @@ const prepOutput = function () {
 
   // Check radio on change
   document
-    .querySelector('#outputLocation')
+    .querySelector('#outputRelative')
     .addEventListener('input', (e) => {
       document.querySelector('#outputLoc1').checked = true
+    })
+
+  document
+    .querySelector('#outputLocationAbsolute')
+    .addEventListener('input', e => {
+      document.querySelector('#outputLoc2').checked = true
+
     })
 }
 
