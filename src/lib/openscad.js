@@ -3,6 +3,7 @@ const fs = require('fs')
 const child = require('child_process')
 const os = require('os')
 const execa = require('execa')
+const { reject } = require('async')
 
 class Openscad {
   constructor (exe, flags) {
@@ -16,6 +17,12 @@ class Openscad {
       colorscheme: 'Cornfield'
     }
 
+    this.childOptions = { 
+      cwd: this.tempDir, 
+      timeout: 120000,
+      maxBuffer: 1024*1024 * 5
+    }
+
     this.flags = { ...defFlags, ...flags }
   };
 
@@ -27,7 +34,7 @@ class Openscad {
 
   prepareFlags (importFile, output, conf) {
     const flags = [
-      `-o${output}`,
+      `-o${output}`, // no space after -o, bug in openscad
       `--imgsize=${conf.w * 2},${conf.h * 2}`,
       `--colorscheme=${this.flags.colorscheme}`,
       importFile
@@ -59,27 +66,59 @@ class Openscad {
 
     return importName
   }
+  
+  generateImage (output = false, file, conf) {
+    return new Promise((resolve, reject) => {
+      if (!output) output = this.tempFile()
+      let threadOptions = { 
+        cwd: this.tempDir, 
+        timeout: 120000,
+        maxBuffer: 1024*1024 * 5
+      }
+  
+      const importFile = this.createImport(file.location)
+      const flags = this.prepareFlags(importFile, output, conf)
+      
+      try {
+        const thread = child.spawn(this.exe, flags, threadOptions)
+        console.log(`Generating: ${path.parse(file.location).base}`)
+    
+        thread.on('close', (code) => {
+          if (code !== 0) {
+            reject(`child process exited with error code ${code} - during openscad generation`)
+          } else {
+            resolve(output)
+          }
+        })
+      } catch(e) {
+        reject(e)
+      }
+    })
+  }
 
   async generateImage (output = false, file, conf) {
     if (!output) output = this.tempFile()
+    let execaOptions = { 
+      cwd: this.tempDir, 
+      timeout: 120000,
+      maxBuffer: 1024*1024 * 5
+    }
 
     const importFile = this.createImport(file.location)
     const flags = this.prepareFlags(importFile, output, conf)
-
-    const thread = execa(this.exe, flags, { cwd: this.tempDir })
-
-    // setTimeout(() => {
-    //   console.log(thread)
-    //   console.log(`Something went wrong with rendering: ${file.location}`)
-    //   thread.cancel()
-    // }, 10000)
-
+    console.log(`generating ${path.parse(file.location).base}`)
+    const thread = execa(this.exe, flags, execaOptions)
+    console.log(`generating ${path.parse(file.location).base} QUEUED`)
+    console.log(thread)
     try {
-      let result = await thread
+      const result = await thread
       if (result.exitCode !== 0) {
-        throw new Error('openscad exited with non-0 code')
+        console.log(`generating ${path.parse(file.location).base} FAILED`)
+        throw new Error('openscad exited with non-0 code, restart the program and try again')
       }
+      console.log(`generating ${path.parse(file.location).base} SUCCES`)
     } catch (err) {
+      console.log(thread)
       console.error('Something went wrong with rendering file:')
       console.error(file)
       console.error(conf)

@@ -6,14 +6,17 @@ class ThreeD {
 		this.location = location;
 	}
 
-	async generateImage(output, scad, settings) {
-		if (!settings.h)
-			settings.h = 800;
-		if (!settings.w)
-			settings.w = 800;
+	generateImage(output, scad, settings) {
+		return new Promise((resolve, reject) => {
+			if (!settings.h) settings.h = 800;
+			if (!settings.w) settings.w = 800;
 
-		this.image = await scad.generateImage(output, this, settings);
-		return this.image;
+			scad.generateImage(output, this, settings)
+				.then((image) => {
+					this.image = image
+					resolve(this.image)
+				})
+		})
 	}
 
 	static getChildInstance = function(file) {

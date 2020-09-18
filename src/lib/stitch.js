@@ -75,9 +75,15 @@ class Stitch {
     // })
   }
 
+  deleteExisting(output) {
+    fs.unlinkSync(output)
+  }
+
   async init () {
+    console.log(this)
     var panel = new Jimp(this.w, this.h, '#000000')
     await this.compositeImages(panel)
+    console.log(this.output)
 
     await panel.write(this.output)
   }

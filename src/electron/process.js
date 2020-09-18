@@ -6,50 +6,39 @@ const async = require('async')
 
 class Process {
   constructor (conf, dirs, window) {
-    dirs = [
-      '/Users/thijs/Downloads/All Pokemon',
-      '/Users/thijs/Downloads/April',
-      '/Users/thijs/Downloads/DT+-+CRD+Objective+marker',
-      '/Users/thijs/Downloads/Marko - Sol Justicar',
-      '/Users/thijs/Downloads/Mechs',
-      '/Users/thijs/Downloads/Vulpeana Whitebranch',
-      '/Users/thijs/Downloads/Lazy+Grid+Clock',
-      '/Users/thijs/Downloads/Lazy+Grid+Clock (1)',
-      '/Users/thijs/Downloads/tools-modular-desktop-stand-tweezerplierscrewdriver-v-20-model_files',
-      '/Users/thijs/Dekstop/test.stl'
-    ]
-
     // dirs = [
-    //   'D:\\Downloads\\torrents\\[3D Art Guy] Living Saint - May 2020',
-    //   'D:\\Downloads\\torrents\\[3D Art Guy] Marilith Demon - April 2020',
-    //   'D:\\Downloads\\torrents\\[3D Art Guy] Marilith normal - April 2020',
-    //   'D:\\Downloads\\torrents\\[3D Art Guy] Succubus Demon - April 2020',
-    //   'D:\\Downloads\\torrents\\[3D Forge] April 2019',
-    //   'D:\\Downloads\\torrents\\- Blindrune Cult',
-    //   'D:\\Downloads\\torrents\\ hobitonn Bonsay',
-    //   'D:\\Downloads\\torrents\\(Kickstarter - Mia Kay) Familiars and Beasts',
-    //   'D:\\Downloads\\torrents\\[3D Art Guy] Crusader Diorama',
-    //   'D:\\Downloads\\torrents\\[3D Art Guy] Dead Knight',
-    //   'D:\\Desktop\\STL Temp TEst\\Dragontaur\\Dragontaur_Arm.stl',
-    //   'D:\\Desktop\\STL Temp TEst\\Dragontaur\\Dragontaur_FINAL.stl',
-    //   'D:\\Desktop\\STL Temp TEst\\Dragontaur\\Dragontaur_Hand.stl',
-    //   'D:\\Desktop\\STL Temp TEst\\Dragontaur\\Dragontaur_WHOLE.stl',
-    //   'D:\\Desktop\\STL Temp TEst\\Dragonlionne_FINAL.stl',
-    //   'D:\\Desktop\\STL Temp TEst\\Dragonlionne_Head.stl',
-    //   'D:\\Desktop\\STL Temp TEst\\Dragonlionne_NoBase_WHOLE.stl',
-    //   'D:\\Desktop\\STL Temp TEst\\Dragonlionne_Peg.stl',
-    //   'D:\\Desktop\\STL Temp TEst\\Dragonlionne_Tail.stl',
-    //   'D:\\Desktop\\STL Temp TEst\\Dragonlionne_Tail2.stl',
-    //   'D:\\Desktop\\STL Temp TEst\\Dragonlionne_WHOLE.stl',
-    //   'D:\\Desktop\\STL Temp TEst\\DragonTurtle',
-    //   'D:\\Downloads\\torrents\\[3D Art Guy] GreatJaw Orc Fighter'
+    //   '/Users/thijs/Downloads/All Pokemon',
+    //   '/Users/thijs/Downloads/April',
+    //   '/Users/thijs/Downloads/DT+-+CRD+Objective+marker',
+    //   '/Users/thijs/Downloads/Marko - Sol Justicar',
+    //   '/Users/thijs/Downloads/Mechs',
+    //   '/Users/thijs/Downloads/Vulpeana Whitebranch',
+    //   '/Users/thijs/Downloads/Lazy+Grid+Clock',
+    //   '/Users/thijs/Downloads/Lazy+Grid+Clock (1)',
+    //   '/Users/thijs/Downloads/tools-modular-desktop-stand-tweezerplierscrewdriver-v-20-model_files',
+    //   '/Users/thijs/Dekstop/test.stl'
     // ]
+
+    dirs = [
+      'D:\\Desktop\\STL Temp\\[DO3D] Flash - Helmet - Justice League',
+      'D:\\Desktop\\STL Temp\\[DO3D] Joker - gun - Suicide Squad',
+      'D:\\Desktop\\STL Temp\\[DO3D] Subzero - Mask - Mortal Kombat',
+      'D:\\Desktop\\STL Temp\\[Exequiel Devoto] Batman-Sanity Diorama',
+      'D:\\Desktop\\STL Temp\\[Ghamak] Sci-Fi August 2020 (with support)',
+      'D:\\Desktop\\STL Temp\\[Kickstarter - War Scenery] Apocalypse Fortress',
+      'D:\\Desktop\\STL Temp\\[Patreon - Asgard Rising] April 2020',
+      'D:\\Desktop\\STL Temp\\[Patreon - Mini Flayer Miniatures] April 2020 Release',
+      'D:\\Desktop\\STL Temp\\[Patreon - Wyvern Tiles] Outdoors',
+      'D:\\Desktop\\STL Temp\\[3D Art Guy] Marilith Demon - April 2020',
+      'D:\\Desktop\\STL Temp\\[3DAlienWorlds] Necrontyr Arena Files', 
+      'D:\\Desktop\\STL Temp\\[Black Scrolls Games] Treasure Pile with Column'
+    ]
     // dirs = [
     // 'C:\\Torrent Temp\\3D Miniature Models - Mar 2020'
     // ]
     this.conf = conf
-    // this.conf.scadExe = 'C:\\Program Files\\OpenSCAD\\openscad.exe'
-    this.conf.scadExe = '/Applications/OpenSCAD.app'
+    this.conf.scadExe = 'D:\\Downloads\\zip\\OpenSCAD-2019.05-x86-64\\openscad-2019.05\\openscad.exe'
+    // this.conf.scadExe = '/Applications/OpenSCAD.app'
 
     this.dirs = dirs
     this.window = window
@@ -64,7 +53,7 @@ class Process {
     this.scad = new Openscad(this.conf.scadExe, this.conf.scad)
   }
 
-  executeGen (file, key, callback) {
+  executeGen (file) {
     file.generateImage(null, this.scad, this.conf.scad)
       .then(() => {
         callback()
@@ -73,18 +62,41 @@ class Process {
 
   initGen (files) {
     return new Promise((resolve, reject) => {
-      async.forEachOfLimit(
-        files,
+      async.eachLimit(
+        files, 
         this.conf.process.maxProcess,
-        this.executeGen.bind({
-          scad: this.scad,
-          conf: this.conf
-        }),
-        (err) => {
-          if (err) reject(err)
-          resolve()
-        })
+        async (file) => {
+          await file.generateImage(null, this.scad, this.conf.scad)
+        }
+      ).then(() => {
+        resolve()
+      })
+      .catch(e => {
+        if (e) throw e
+      })
+      // async.forEachOfLimit(
+      //   files,
+      //   this.conf.process.maxProcess,
+      //   this.executeGen.bind({
+      //     scad: this.scad,
+      //     conf: this.conf
+      //   }),
+      //   (err) => {
+      //     if (err) reject(err)
+      //     resolve()
+      //   })
     })
+  }
+
+  trimFiles (files) {
+    let imgsMax = this.conf.process.imgsMax
+    if (this.conf.process.imgsMax !== 0) {
+      let toBeCut = ((files.length - imgsMax) <= 0) ? 0 : files.length - imgsMax
+      files.splice(imgsMax, toBeCut)
+      return files
+    } else {
+      return files
+    }
   }
 
   getFilesAndTrim (dir) {
@@ -94,22 +106,16 @@ class Process {
     )
 
     // Cut array to imgsMax size
-    if (this.conf.process.imgsMax !== 0) {
-      files.splice(this.conf.process.imgsMax, files.length)
-    }
-
-    return files
+    return this.trimFiles(files)
   }
 
   async generateScad (dir) {
-    // Get all objects from folder
     const files = this.getFilesAndTrim(dir)
 
     const time = new Date().getTime()
     await this.initGen(files)
     console.log(`getting all took ${new Date().getTime() - time}`)
     return files
-
   }
 
   async stitch (threeds, dir) {
@@ -128,6 +134,8 @@ class Process {
       await this.stitch(threeds, this.dirs[i])
       console.log(`completed ${this.dirs[i]}`)
     }
+    console.log("EVERYTHING WENT FINE AND HAS COMPLETED")
+    this.cleanup()
   }
 
   outputName (dir) {
@@ -149,6 +157,10 @@ class Process {
       const folder = this.outputFolder(dir)
       return path.join(folder, this.outputName(dir))
     }
+  }
+
+  cleanup() {
+    this.scad.clearTempDir()
   }
 }
 
