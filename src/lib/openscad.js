@@ -73,7 +73,8 @@ class Openscad {
       let threadOptions = { 
         cwd: this.tempDir, 
         timeout: 120000,
-        maxBuffer: 1024*1024 * 5
+        maxBuffer: 1024*1024 * 5,
+        stdio: 'ignore'
       }
   
       const importFile = this.createImport(file.location)
@@ -96,12 +97,13 @@ class Openscad {
     })
   }
 
-  async generateImage (output = false, file, conf) {
+  async generateImageaa (output = false, file, conf) {
     if (!output) output = this.tempFile()
     let execaOptions = { 
       cwd: this.tempDir, 
       timeout: 120000,
-      maxBuffer: 1024*1024 * 5
+      maxBuffer: 1024*1024 * 5,
+      stdio: 'ignore'
     }
 
     const importFile = this.createImport(file.location)
