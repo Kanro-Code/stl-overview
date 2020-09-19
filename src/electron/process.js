@@ -132,7 +132,6 @@ class Process {
     for (let i = 0; i < this.dirs.length; i++) {
       const threeds = await this.generateScad(this.dirs[i])
       await this.stitch(threeds, this.dirs[i])
-      console.log(`completed ${this.dirs[i]}`)
     }
     console.log("EVERYTHING WENT FINE AND HAS COMPLETED")
     this.cleanup()
