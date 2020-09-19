@@ -108,19 +108,13 @@ class Openscad {
 
     const importFile = this.createImport(file.location)
     const flags = this.prepareFlags(importFile, output, conf)
-    console.log(`generating ${path.parse(file.location).base}`)
     const thread = execa(this.exe, flags, execaOptions)
-    console.log(`generating ${path.parse(file.location).base} QUEUED`)
-    console.log(thread)
     try {
       const result = await thread
       if (result.exitCode !== 0) {
-        console.log(`generating ${path.parse(file.location).base} FAILED`)
         throw new Error('openscad exited with non-0 code, restart the program and try again')
       }
-      console.log(`generating ${path.parse(file.location).base} SUCCES`)
     } catch (err) {
-      console.log(thread)
       console.error('Something went wrong with rendering file:')
       console.error(file)
       console.error(conf)
