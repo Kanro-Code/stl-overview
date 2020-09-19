@@ -9,7 +9,7 @@
 	<link rel="stylesheet" href="./css/bootstrap.min.css">
 	<link rel="stylesheet" href="./css/window.css">
 	<script src="./js/window.js" charset="utf-8"></script>
-	<meta http-equiv="Content-Security-Policy" content="script-src 'self' 'unsafe-inline';" /> 
+	<meta http-equiv="Content-Security-Policy" content="script-src 'self' 'unsafe-inline';" />
 </head>
 
 <body>
@@ -32,55 +32,35 @@
 	<div class="container-init">
 		<div class="sidebar">
 			<header>
-				<a href="https://github.com/Kanro-Code/stl-overview">3D Preview Generator</a>
+				<a href="https://github.com/Kanro-Code/stl-overview">Stl Overview Generator</a>
 			</header>
+
 			<ul class="nav">
-				<p style="color: white; padding: 1em">This tool is very much still in development. Any feature request, ideas, feedback, or bugs can be submitted on github or contact Kanro#9735 on discord.</p>
-				<p style="color: white; padding: 1em">If you want to submit crash reports please try to give some context as to what you were doing, what files you were working with etc. Any detail can be important, even if it doesn't seem to make sense.</p>
-				<p style="color: white; padding: 1em; line-height: 1.2em;">Missing features/known bugs:<br>
-					-Settings not saving between sessions<br>
-					-No input validation -> You can crash this program if you input invalid settings<br>
-					-Progress bars are broken<br>
-					-Program can crash when you select a folder, and then turn off 'Find Files in Subfolders'<br>
-					<br>
-					-Most importantly: no proper crash or error handling
+				<p style="color: white; padding: 1em">
+					This tool is very much still in development. Any feature request, ideas, feedback, or bugs can be submitted on github or contact Kanro#9735 on discord.
 				</p>
-				<!-- <li class="current">
-					<a href="./program-1.html">
-						<i class="button-getting-started">0. Getting Started</i>
-					</a>
-				</li>
-				<li>
-					<a class="disabled" href="./program-2.html">
-						<i class="button-getting-started">1. Select Files and/or Folders</i>
-					</a>
-				</li>
-				<li>
-					<a class="disabled" href="./program-3.html">
-						<i class="button-getting-started">2. Output Image Settings</i>
-					</a>
-				</li>
-				<li>
-					<a class="disabled" href="./program-4.html">
-						<i class="button-getting-started">3. "Advanced" Settings</i>
-					</a>
-				</li>
-				<li>
-					<a class="disabled" href="./program-4.html">
-						<i class="button-getting-started">4. Start Process</i>
-					</a>
-				</li> -->
+				<p style="color: white; padding: 1em">
+					If you want to submit crash reports please try to give some context as to what you were doing, what files you were working with etc. Any detail can be important, even if it doesn't seem to make sense.
+				</p>
+				<p style="color: white; padding: 1em; line-height: 1.2em;">
+					Missing features/known bugs:<br> 
+					-Settings not saving between sessions<br> 
+					-No input validation -> You can crash this program if you input invalid settings<br> 
+					-Progress bars are broken<br> 
+					-Program can crash when you select a folder,
+					and then turn off 'Find Files in Subfolders'<br>
+					<br> -Most importantly: no proper crash or error handling
+				</p>
 			</ul>
 		</div>
 
 		<div class="content">
 			<div class="text-container">
-				<h2 class="p-title">0. Getting started</h2>
+				<h2 class="p-title">1. Getting started</h2>
 				<div class="text-lead">
-					In order to generate images from 3D objects a dependency is needed. If you have not yet done so, please install Openscad.
-					You can find Openscad <a href="" id="openscad">here.</a>
+					In order to generate images from 3D objects a dependency is needed. If you have not yet done so, please install Openscad. You can find Openscad <a href="" id="openscad">here.</a>
 				</div>
-				
+
 				<br>
 
 				<div class="input-group">
@@ -98,7 +78,7 @@
 			<div class="text-container-spacer"></div>
 
 			<div class="text-container">
-				<h2 class="p-title">1. Select Files and/or Folders</h2>
+				<h2 class="p-title">2. Select Files and/or Folders</h2>
 				<div class="text-lead">
 					You can select individual (supported) files or folders to generate an output for. Every file/folder will generate it's own ouput.<br>
 					<p class="text-note">Keep in mind that all selected files and folders will use the same settings.</p>
@@ -119,12 +99,12 @@
 
 				<div class="form-group">
 					<label for="perspective1"><b>Find files in subfolders</b></label>
-				
+
 					<div class="form-check">
 						<input class="form-check-input" type="checkbox" id="recursive" checked>
 						<label class="form-check-label">
-							Enable (default)
-						</label>
+				Enable (default)
+			</label>
 					</div>
 				</div>
 			</div>
@@ -134,13 +114,12 @@
 			<div class="text-container-spacer"></div>
 
 			<div class="text-container">
-				<h2 class="p-title">2. Output Image Settings</h2>
+				<h2 class="p-title">3. Output Image Settings</h2>
 				<div class="text-lead">
-					You can select individual (supported) files or folders to generate an output for. Every file/folder will generate it's own ouput.<br>
-					Keep in mind that all files and folders will use the same settings.
+					You can select individual (supported) files or folders to generate an output for. Every file/folder will generate it's own ouput.<br> Keep in mind that all files and folders will use the same settings.
 				</div>
 				<hr>
-					<!-- COLUMN SIZE -->
+				<!-- COLUMN SIZE -->
 
 				<div class="form-group">
 					<label><b>Output Width in Pixels</b></label>
@@ -169,17 +148,17 @@
 				<div class="form-group">
 					<label><b>Color Scheme</b></label>
 					<select id="colorschemeselect" class="form-control" size="10">
-						<option value="Cornfield" selected>Cornfield (default)</option>
-						<option value="Metallic">Metallic</option>
-						<option value="Sunset">Sunset</option>
-						<option value="Starnight">Starnight</option>
-						<option value="BeforeDawn">Before Dawn</option>
-						<option value="Nature">Nature</option>
-						<option value="DeepOcean">DeepOcean</option>
-						<option value="Solarized">Solarized</option>
-						<option value="Tomorrow">Tomorrow</option>
-						<option value="Tomorrow Night">Tomorrow Night</option>
-					</select>
+			<option value="Cornfield" selected>Cornfield (default)</option>
+			<option value="Metallic">Metallic</option>
+			<option value="Sunset">Sunset</option>
+			<option value="Starnight">Starnight</option>
+			<option value="BeforeDawn">Before Dawn</option>
+			<option value="Nature">Nature</option>
+			<option value="DeepOcean">DeepOcean</option>
+			<option value="Solarized">Solarized</option>
+			<option value="Tomorrow">Tomorrow</option>
+			<option value="Tomorrow Night">Tomorrow Night</option>
+			</select>
 				</div>
 				<div class="colorscheme-preview">
 					<img id="colorschemepreview" src="img/colorscheme/Cornfield.png">
@@ -202,7 +181,7 @@
 
 					<div class="input-group">
 						<div class="input-group-text">
-							<input type="radio" name="outputLocation" id="outputLoc2" value="outputAbsolute" >
+							<input type="radio" name="outputLocation" id="outputLoc2" value="outputAbsolute">
 						</div>
 						<div class="input-group-prepend">
 							<span class="input-group-text">Absolute Path</span>
@@ -219,7 +198,7 @@
 			<div class="text-container-spacer"></div>
 
 			<div class="text-container">
-				<h2 class="p-title">3. "Advanced" Settings</h2>
+				<h2 class="p-title">4. "Advanced" Settings</h2>
 				<div class="text-lead">
 					If you want to change some minor, more advanced settings, take a look th
 					<p class="text-note">Keep in mind that all selected files and folders will use the same settings.</p>
@@ -233,14 +212,14 @@
 					<div class="form-check">
 						<input class="form-check-input" type="radio" name="orderBy" value="size" checked>
 						<label class="form-check-label">
-							Based on size, larger files first (default)
-						</label>
+				Based on size, larger files first (default)
+			</label>
 					</div>
 					<div class="form-check">
 						<input class="form-check-input" type="radio" name="orderBy" value="random">
 						<label class="form-check-label">
-							Random selection
-						</label>
+				Random selection
+			</label>
 					</div>
 					<small class="form-text text-muted">When the maximum number of 3D objects is passed you can make the program make a choice based on size or randomness.</small>
 				</div>
@@ -252,8 +231,8 @@
 					<div class="form-check">
 						<input class="form-check-input" type="checkbox" id="imgsKeepPreview">
 						<label class="form-check-label" for="autocenter">
-							<del>Enable</del>
-						</label>
+				<del>Enable</del>
+			</label>
 						<small class="form-text text-muted">This option is for those that want to generate an image for every 3D object found in a folder/subfolders. The image will be 800x800. Save location will always be relative in ./previews/. ! This can make the whole process take a lot longer, and take up significant disk space !</small>
 					</div>
 				</div>
@@ -265,8 +244,8 @@
 					<div class="form-check">
 						<input class="form-check-input" type="checkbox" id="imgAutoCenter" checked>
 						<label class="form-check-label" for="autocenter">
-							Enable (default)
-						</label>
+				Enable (default)
+			</label>
 						<small class="form-text text-muted">Openscad will translate the camera to display the front the the model (hopefully, depending on how the original author exported the 3D object this will most likely fail).</small>
 					</div>
 				</div>
@@ -275,92 +254,91 @@
 					<div class="form-check">
 						<input class="form-check-input" type="checkbox" id="imgViewAll" checked>
 						<label class="form-check-label">
-							Enable (default)
-						</label>
+				Enable (default)
+			</label>
 						<small class="form-text text-muted">Openscad automatically scales object to fit in viewport.</small>
 					</div>
 				</div>
 				<div class="form-group">
 
-				<hr>
-				<!-- fullrender -->
-				<div class="form-group">
-					<label for="perspective1"><b>Full render in Openscad</b></label>
-					<div class="form-check">
-						<input class="form-check-input" type="checkbox" id="imgsFullRender">
-						<label class="form-check-label">
-							Enable
-						</label>
-						<small class="form-text text-muted">If you don't know what this means, you do not need it. It <u>adds significant render time</u> and has no benefit for 99.9% of files.</small>
-					</div>
-				</div>
-
-				<hr>
-
-				<div class="form-group">
-					<label for="perspective1"><b>Projection view</b></label>
-					<div class="form-check">
-						<input id="view-perspective" class="form-check-input" type="radio" name="perspective" id="perspective1" value="perspective" checked>
-						<label class="form-check-label" for="perspective1">
-							Perspective view (default)
-						</label>
-					</div>
-					<div class="form-check">
-						<input class="form-check-input" type="radio" name="perspective" id="perspective2" value="ortho">
-						<label class="form-check-label" for="perspective2">
-							Orthographic projection
-						</label>
-					</div>
-					<small class="form-text text-muted">Perspective viewpoints give more information about depth and are often easier to view because you use perspective views in real life. Orthographic viewpoints make it much easier to compare two parts of the molecule, as there is no question about how the viewpoint may affect the perception of distance. TLDR; Perspective will do fine.</small>
-				</div>
-
-				<hr>
-
-				<div class="form-group">
-					<label for="parallel"><b>How many parallel openscad renders</b></label>
+					<hr>
+					<!-- fullrender -->
 					<div class="form-group">
-						<input type="number" class="form-control" id="maxProcess" value="8">
+						<label for="perspective1"><b>Full render in Openscad</b></label>
+						<div class="form-check">
+							<input class="form-check-input" type="checkbox" id="imgsFullRender">
+							<label class="form-check-label">
+				Enable
+			</label>
+							<small class="form-text text-muted">If you don't know what this means, you do not need it. It <u>adds significant render time</u> and has no benefit for 99.9% of files.</small>
+						</div>
 					</div>
-					<small class="form-text text-muted">In order to speed up the process of rendering all the files you can decide to run more than a few proceses at the same time. For speed, it's suggested to use 1x your CPU core count.
-						If this lags your PC, consider tuning it down.
-					</small>
+
+					<hr>
+
+					<div class="form-group">
+						<label for="perspective1"><b>Projection view</b></label>
+						<div class="form-check">
+							<input id="view-perspective" class="form-check-input" type="radio" name="perspective" id="perspective1" value="perspective" checked>
+							<label class="form-check-label" for="perspective1">
+				Perspective view (default)
+			</label>
+						</div>
+						<div class="form-check">
+							<input class="form-check-input" type="radio" name="perspective" id="perspective2" value="ortho">
+							<label class="form-check-label" for="perspective2">
+				Orthographic projection
+			</label>
+						</div>
+						<small class="form-text text-muted">Perspective viewpoints give more information about depth and are often easier to view because you use perspective views in real life. Orthographic viewpoints make it much easier to compare two parts of the molecule, as there is no question about how the viewpoint may affect the perception of distance. TLDR; Perspective will do fine.</small>
+					</div>
+
+					<hr>
+
+					<div class="form-group">
+						<label for="parallel"><b>How many parallel openscad renders</b></label>
+						<div class="form-group">
+							<input type="number" class="form-control" id="maxProcess" value="8">
+						</div>
+						<small class="form-text text-muted">In order to speed up the process of rendering all the files you can decide to run more than a few proceses at the same time. For speed, it's suggested to use 1x your CPU core count.
+			If this lags your PC, consider tuning it down.
+			</small>
+					</div>
+
+
 				</div>
 
-
 			</div>
+			<div class="text-container-spacer"></div>
 
+			<div class="text-container" id="progress">
+				<h2 class="p-title">5. Start Process</h2>
+				<button type="button" class="btn btn-danger" id="startGenerate">Generate Images</button>
+				<hr>
+				<p id="temp"></p>
+				<div class="progress-bar-text">
+					Files/Folders
+				</div>
+				<div class="progress" style="height: 25px;">
+					<div class="progress-bar" style="width: 25%;" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100">25%</div>
+				</div>
+
+				<div class="progress-bar-text">
+					Generating images
+				</div>
+				<div class="progress" style="height: 25px;">
+					<div class="progress-bar" style="width: 25%;" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100">25%</div>
+				</div>
+
+				<div class="progress-bar-text">
+					Stitching final image
+				</div>
+				<div class="progress" style="height: 25px;">
+					<div class="progress-bar" style="width: 80%;" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100">80%</div>
+				</div>
+			</div>
+			<div class="text-container-spacer"></div>
 		</div>
-		<div class="text-container-spacer"></div>
-
-		<div class="text-container" id="progress">
-			<h2 class="p-title">4. Start Process</h2>
-			<button type="button" class="btn btn-danger" id="startGenerate">Generate Images</button>
-			<hr>
-			<p id="temp"></p>
-			<div class="progress-bar-text">
-				Files/Folders
-			</div>
-			<div class="progress" style="height: 25px;">
-				<div class="progress-bar" style="width: 25%;" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100">25%</div>
-			</div>
-
-			<div class="progress-bar-text">
-				Generating images
-			</div>
-			<div class="progress" style="height: 25px;">
-				<div class="progress-bar" style="width: 25%;" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100">25%</div>
-			</div>
-
-			<div class="progress-bar-text">
-				Stitching final image
-			</div>
-			<div class="progress" style="height: 25px;">
-				<div class="progress-bar" style="width: 80%;" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100">80%</div>
-			</div>
-		</div>
-		<div class="text-container-spacer"></div>
-	</div>
 </body>
 
 </html>
-
