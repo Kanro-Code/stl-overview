@@ -4,6 +4,25 @@ const child = require('child_process');
 const fs = require('fs');
 const { TestScheduler } = require('jest');
 
+expect.extend({
+  toBeWithinRange(received, floor, ceiling) {
+    const pass = received >= floor && received <= ceiling;
+    if (pass) {
+      return {
+        message: () =>
+          `expected ${received} not to be within range ${floor} - ${ceiling}`,
+        pass: true,
+      };
+    } else {
+      return {
+        message: () =>
+          `expected ${received} to be within range ${floor} - ${ceiling}`,
+        pass: false,
+      };
+    }
+  },
+})
+
 // Constructor
 test('create Openscad Object and check flags', () => {
 	const data = new Openscad(
@@ -100,4 +119,68 @@ test('clear tempdir', () => {
 	expect(() => {
 		data.clearTempDir();
 	}).toBeTruthy();
+})
+
+test('get tempfile', () => {
+	let data = new Openscad('test.exe')
+	let temp = data.tempFile()
+	expect(path.parse(temp).base.length).toBe(20)
+	expect(path.parse(temp).ext).toBe('.png')
+
+	temp = data.tempFile('.jpg')
+	expect(path.parse(temp).ext).toBe('.jpg')
+})
+
+test('prepare flags', () => {
+	let data = new Openscad('test.exe')
+	let conf = {
+		w: 950,
+		h: 880
+	}
+
+	let flags = data.prepareFlags('./location/importFile', 'output.png', conf)
+	let flagsExpected = [
+		'-ooutput.png',
+		'./location/importFile',
+		'--imgsize=1900,1760'
+	]
+
+	expect(flags).toEqual(expect.arrayContaining(flagsExpected))
+
+	let settings = {
+		autocenter: true,
+		viewall: true,
+		fullrender: true,
+		ortho: true,
+		colorscheme: 'Metallic'
+	}
+
+	data = new Openscad('test.exe', settings)
+	flags = data.prepareFlags(null, null, { w: 555, h: 330 })
+	flagsExpected = [
+		'--autocenter',
+		'--viewall',
+		'--render',
+		'--projection=o',
+		'--colorscheme=Metallic'
+	]
+
+	expect(flags).toEqual(expect.arrayContaining(flagsExpected))
+})
+
+test('get randomUnique', () => {
+	for (let i = 6; i <= 32; i++) {
+		for (let j = 0; j < 100; j++) {
+			let number = Openscad.randomUnique(i)
+			expect(number.length).toBe(i)
+		}
+	}
+
+	let number = Openscad.randomUnique()
+	expect(number.length).toBe(8)
+
+})
+
+test('get tempfile', () => {
+
 })

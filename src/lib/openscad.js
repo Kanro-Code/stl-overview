@@ -17,12 +17,6 @@ class Openscad {
       colorscheme: 'Cornfield'
     }
 
-    this.childOptions = { 
-      cwd: this.tempDir, 
-      timeout: 120000,
-      maxBuffer: 1024*1024 * 5
-    }
-
     this.flags = { ...defFlags, ...flags }
   };
 
@@ -47,14 +41,17 @@ class Openscad {
     return flags
   }
 
-  static randomUnique () {
-    const number = Math.random()
-    number.toString(36)
-    return number.toString(36).substr(2)
+  static randomUnique (length = 8, prefix) {
+    const string = prefix + Math.random().toString(36).substr(2)
+    if (string.length > length) {
+      return  string.substring(0, length)
+    } else {
+      return Openscad.randomUnique(length, string)
+    }
   }
 
   createImport (origin) {
-    const importName = Openscad.randomUnique()
+    const importName = Openscad.randomUnique(12)
     const importFile = path.join(this.tempDir, importName)
 
     // Create important command, making sure path is posix compatible
@@ -97,34 +94,6 @@ class Openscad {
     })
   }
 
-  async generateImageaa (output = false, file, conf) {
-    if (!output) output = this.tempFile()
-    let execaOptions = { 
-      cwd: this.tempDir, 
-      timeout: 120000,
-      maxBuffer: 1024*1024 * 5,
-      stdio: 'ignore'
-    }
-
-    const importFile = this.createImport(file.location)
-    const flags = this.prepareFlags(importFile, output, conf)
-    const thread = execa(this.exe, flags, execaOptions)
-    try {
-      const result = await thread
-      if (result.exitCode !== 0) {
-        throw new Error('openscad exited with non-0 code, restart the program and try again')
-      }
-    } catch (err) {
-      console.error('Something went wrong with rendering file:')
-      console.error(file)
-      console.error(conf)
-      console.error(output)
-      throw err
-    }
-
-    return output
-  }
-
   clearTempDir () {
     const files = fs.readdirSync(this.tempDir)
 
@@ -135,8 +104,9 @@ class Openscad {
     })
   }
 
-  tempFile () {
-    return path.join(this.tempDir, Openscad.randomUnique() + '.png')
+  tempFile (extension) {
+    let ext = extension || '.png'
+    return path.join(this.tempDir, Openscad.randomUnique(16) + ext)
   }
 
   set exe (exe) {
