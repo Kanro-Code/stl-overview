@@ -71,8 +71,8 @@ class Openscad {
       const threadOptions = {
         cwd: this.tempDir,
         timeout: 300000,
-        maxBuffer: 1024 * 1024 * 5
-        // stdio: 'ignore'
+        maxBuffer: 1024 * 1024 * 5,
+        stdio: 'ignore'
       }
 
       const importFile = this.createImport(file.location)
@@ -80,7 +80,6 @@ class Openscad {
 
       try {
         const thread = child.spawn(this.exe, flags, threadOptions)
-        console.log(thread)
 
         thread.on('close', (code) => {
           if (code !== 0) {

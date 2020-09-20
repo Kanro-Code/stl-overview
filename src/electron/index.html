@@ -32,7 +32,7 @@
 	<div class="container-init">
 		<div class="sidebar">
 			<header>
-				<a href="https://github.com/Kanro-Code/stl-overview">Stl Overview Generator</a>
+				<a tabindex="-1" href="https://github.com/Kanro-Code/stl-overview">Stl Overview Generator</a>
 			</header>
 
 			<ul class="nav">
@@ -40,16 +40,15 @@
 					This tool is very much still in development. Any feature request, ideas, feedback, or bugs can be submitted on github or contact Kanro#9735 on discord.
 				</p>
 				<p style="color: white; padding: 1em">
-					If you want to submit crash reports please try to give some context as to what you were doing, what files you were working with etc. Any detail can be important, even if it doesn't seem to make sense.
+					If you experience problems, please report them to me. You can press ctrl-shift-i to open the console and see if any errors are produced.
 				</p>
 				<p style="color: white; padding: 1em; line-height: 1.2em;">
 					Missing features/known bugs:<br> 
-					-Settings not saving between sessions<br> 
-					-No input validation -> You can crash this program if you input invalid settings<br> 
-					-Progress bars are broken<br> 
-					-Program can crash when you select a folder,
-					and then turn off 'Find Files in Subfolders'<br>
-					<br> -Most importantly: no proper crash or error handling
+					- Sometimes the generation of the images just halts (5+ minutes) and doesn't proceed - if this happens you should restart the program and start over. I am working hard on fixing this one issue but it's a fairly hard one to track down.<br> 
+					- No way to cancel/stop process<br> 
+					- Able to restart process mid-progress<br> 
+					- No input validation -> You can crash this program if you input invalid settings<br> 
+					- Most importantly: no proper crash or error handling
 				</p>
 			</ul>
 		</div>
@@ -89,7 +88,7 @@
 						<div class="f-input-border"></div>
 						<div class="f-input-label">Drop folder(s) or file(s) here.*</div>
 					</div>
-					<div class="">
+					<div>
 						<button id="drop-file" type="button" class="btn btn-secondary">Select Files</button>
 						<button id="drop-folder" type="button" class="btn btn-secondary">Select Folders</button>
 					</div>
@@ -176,7 +175,7 @@
 						<div class="input-group-prepend">
 							<span class="input-group-text">Relative Path</span>
 						</div>
-						<input type="text" class="form-control" id="outputRelative" value="./preview/">
+						<input type="text" class="form-control" id="outputLocationRelative" value="./preview/">
 					</div>
 
 					<div class="input-group">
@@ -188,7 +187,7 @@
 						</div>
 						<input type="text" class="form-control" id="outputLocationAbsolute">
 						<div class="input-group-append">
-							<button class="btn btn-secondary" type="button" id="outputLocation">Browse</button>
+							<button class="btn btn-secondary" type="button" id="outputLocationBrowse">Browse</button>
 						</div>
 						<small class="form-text text-muted">When saving with a relative path your output will depend on where your files come from. With Absolute Path you can save all previews in a single location. When in doubt, just don't touch these settings.</small>
 					</div>
@@ -200,7 +199,7 @@
 			<div class="text-container">
 				<h2 class="p-title">4. "Advanced" Settings</h2>
 				<div class="text-lead">
-					If you want to change some minor, more advanced settings, take a look th
+					If you want to change some minor, more advanced settings, take a look these settings. Any default settings here will work just fine.
 					<p class="text-note">Keep in mind that all selected files and folders will use the same settings.</p>
 				</div>
 
@@ -227,13 +226,13 @@
 				<!-- Keep preview -->
 
 				<div class="form-group">
-					<label for="perspective1"><b>Create individual images out of every STL in a folder</b></label>
+					<label for="perspective1"><b><del>Create individual images out of every STL in a folder WIP</del></b></label>
 					<div class="form-check">
 						<input class="form-check-input" type="checkbox" id="imgsKeepPreview">
 						<label class="form-check-label" for="autocenter">
-				<del>Enable</del>
-			</label>
-						<small class="form-text text-muted">This option is for those that want to generate an image for every 3D object found in a folder/subfolders. The image will be 800x800. Save location will always be relative in ./previews/. ! This can make the whole process take a lot longer, and take up significant disk space !</small>
+							<del>Enable</del>
+						</label>
+						<small class="form-text text-muted"><del>This option is for those that want to generate an image for every 3D object found in a folder/subfolders. The image will be 800x800. Save location will always be relative in ./previews/. ! This can make the whole process take a lot longer, and take up significant disk space !</del></small>
 					</div>
 				</div>
 

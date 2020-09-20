@@ -3,22 +3,10 @@ const { dialog, shell } = require('electron').remote
 const ThreeD = require('../lib/threed')
 const Openscad = require('../lib/openscad')
 const Process = require('./process')
+const fs = require('fs')
 
 const currentFiles = []
 
-const dialogOptions = {
-  title: 'Select folder(s) or file(s)',
-  buttonLabel: 'Select',
-  properties: [
-    'multiSelections',
-    'dontAddToRecent',
-    'createDirectory',
-    'promptToCreate'
-  ],
-  filters: [
-    { name: 'Custom File Type', extensions: ['stl'] },
-    { name: 'All Files', extensions: ['*'] }]
-}
 const removeDirClick = (e) => {
   const item = e.srcElement.parentNode
   removeDir(item.value)
@@ -119,16 +107,37 @@ const prepDrop = () => {
   })
 
   document.querySelector('#drop-file').addEventListener('click', () => {
-    const options = { ...dialogOptions }
-    options.properties.push('openFile')
-    const output = dialog.showOpenDialogSync(null, dialogOptions)
+    const options = {
+      title: 'Select file(s)',
+      buttonLabel: 'Select',
+      properties: [
+        'multiSelections',
+        'openFile',
+        'dontAddToRecent',
+        'createDirectory',
+        'promptToCreate'
+      ],
+      filters: [
+        { name: 'Custom File Type', extensions: ['stl'] },
+        { name: 'All Files', extensions: ['*'] }]
+    }
+    const output = dialog.showOpenDialogSync(null, options)
     checkDirs(output)
   })
 
   document.querySelector('#drop-folder').addEventListener('click', () => {
-    const options = { ...dialogOptions }
-    options.properties.push('openDirectory')
-    const output = dialog.showOpenDialogSync(null, dialogOptions)
+    const options = {
+      title: 'Select folder(s)',
+      buttonLabel: 'Select',
+      properties: [
+        'multiSelections',
+        'openDirectory',
+        'dontAddToRecent',
+        'createDirectory',
+        'promptToCreate'
+      ]
+    }
+    const output = dialog.showOpenDialogSync(null, options)
     checkDirs(output)
   })
 }
@@ -173,7 +182,7 @@ const prepColor = () => {
 
 const prepOutput = () => {
   document
-    .querySelector('#outputLocation')
+    .querySelector('#outputLocationBrowse')
     .addEventListener('click', (e) => {
       const options = {
         title: 'Pick a location to save your output',
@@ -197,7 +206,7 @@ const prepOutput = () => {
 
   // Check radio on change
   document
-    .querySelector('#outputRelative')
+    .querySelector('#outputLocationRelative')
     .addEventListener('input', (e) => {
       document.querySelector('#outputLoc1').checked = true
     })
@@ -243,11 +252,17 @@ const pullSettings = () => {
       columns: parseInt(pullValueId('stitchColumns')),
       createSinglePreview: pullValueCheck('imgsKeepPreview'),
       maxProcess: parseInt(pullValueId('maxProcess'))
+    },
+    misc: {
+      absolute: pullValueId('outputLocationAbsolute'),
+      relative: pullValueId('outputLocationRelative'),
+      outputLoc1: document.querySelector('#outputLoc1').checked,
+      outputLoc2: document.querySelector('#outputLoc2').checked
     }
   }
 
   if (pullValueRadio('outputLocation') === 'outputRelative') {
-    conf.process.outputLocation = pullValueId('outputRelative')
+    conf.process.outputLocation = pullValueId('outputLocationRelative')
     // conf.process.scadOutputAbsolute = false
   } else {
     conf.process.outputLocation = pullValueId('outputLocationAbsolute')
@@ -308,6 +323,10 @@ const start = () => {
     return
   }
   const conf = pullSettings()
+  const json = JSON.stringify(conf)
+  fs.writeFile('./previous-session.json', json, (err) => {
+    if (err) throw err
+  })
   const bars = [
     new ProgressBar('#bar1'),
     new ProgressBar('#bar2'),
@@ -318,7 +337,7 @@ const start = () => {
   process.start()
 }
 
-const prepareModal = () => { 
+const prepareModal = () => {
   const modal = document.querySelector('.modal')
   const body = document.querySelector('body')
 
@@ -328,11 +347,29 @@ const prepareModal = () => {
     document.querySelector('.modal-body').innerHTML = null
     document.querySelector('.modal-title').innerHTML = null
   })
+}
 
-  // document.querySelector('.modal').addEventListener('click', function (e) {
-  //   if (e.target !== modal && e.target !== container) return
-  //   modal.classList.add('hidden')
-  // })
+const loadPreviousSettings = () => {
+  if (fs.existsSync('./previous-session.json')) {
+    let settings = fs.readFileSync('./previous-session.json')
+    settings = JSON.parse(settings)
+
+    if (settings.scadExe) {
+      document.querySelector('#openscad-exe').value = settings.scadExe
+    }
+    if (settings.misc.absolute) {
+      document.querySelector('#outputLocationAbsolute').value = settings.misc.absolute
+    }
+    if (settings.misc.relative) {
+      document.querySelector('#outputLocationRelative').value = settings.misc.relative
+    }
+    if (settings.misc.outputLoc1) {
+      document.querySelector('#outputLoc1').checked = true
+    }
+    if (settings.misc.outputLoc2) {
+      document.querySelector('#outputLoc2').checked = true
+    }
+  }
 }
 
 const ready = () => {
@@ -342,6 +379,7 @@ const ready = () => {
   prepOutput()
   prepGenerate()
   prepareModal()
+  loadPreviousSettings()
 }
 
 const customError = (e, url, line) => {

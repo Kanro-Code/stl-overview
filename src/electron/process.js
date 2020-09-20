@@ -30,7 +30,7 @@ class Process {
     //   'D:\\Desktop\\STL Temp\\[Patreon - Mini Flayer Miniatures] April 2020 Release',
     //   'D:\\Desktop\\STL Temp\\[Patreon - Wyvern Tiles] Outdoors',
     //   'D:\\Desktop\\STL Temp\\[3D Art Guy] Marilith Demon - April 2020',
-    //   'D:\\Desktop\\STL Temp\\[3DAlienWorlds] Necrontyr Arena Files', 
+    //   'D:\\Desktop\\STL Temp\\[3DAlienWorlds] Necrontyr Arena Files',
     //   'D:\\Desktop\\STL Temp\\[Black Scrolls Games] Treasure Pile with Column'
     // ]
     // dirs = [
@@ -76,6 +76,7 @@ class Process {
     const imgsMax = this.conf.process.imgsMax
     if (this.conf.process.imgsMax !== 0) {
       const toBeCut = ((files.length - imgsMax) <= 0) ? 0 : files.length - imgsMax
+      console.log(files)
       files.splice(imgsMax, toBeCut)
       return files
     } else {
@@ -84,6 +85,7 @@ class Process {
   }
 
   getFilesAndTrim (dir) {
+    console.log(dir, this.conf)
     const files = ThreeD.getObjs(
       dir, this.conf.process.recur,
       this.conf.process.imgsSortedBy
@@ -108,8 +110,9 @@ class Process {
       this.outputLocation(dir),
       this.conf
     )
-
+    console.log(`Starting stitch ${dir}`)
     await process.init()
+    console.log(`Finished stitch ${dir}`)
   }
 
   async start () {

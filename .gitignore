@@ -107,3 +107,5 @@ dist
 package-lock.json
 
 .vscode/launch.json
+
+previous-session.json

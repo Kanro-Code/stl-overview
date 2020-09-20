@@ -45,10 +45,9 @@ class ThreeD {
 	}
 
 	static getObjs = function (dir, recur = true, sortedBy) {
-		if (path.parse(dir).ext) {
-			let obj = this.getChildInstance(dir)
-			return (obj) ? [obj] : false;
-		} else {
+		let stats = fs.statSync(dir)
+
+		if (stats.isDirectory()) {
 			let objs = this.getObjsFolder(dir, recur)
 
 			if (sortedBy === 'size') {
@@ -60,8 +59,13 @@ class ThreeD {
 					[objs[i], objs[j]] = [objs[j], objs[i]]
 				}
 			}
-
+			
 			return objs
+		} else if (stats.isFile()) {
+			let obj = this.getChildInstance(dir)
+			return (obj) ? [obj] : false;
+		} else {
+			return false
 		}
 	}
 
