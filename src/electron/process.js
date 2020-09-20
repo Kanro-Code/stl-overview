@@ -6,39 +6,7 @@ const async = require('async')
 
 class Process {
   constructor (conf, dirs, bars) {
-    // dirs = [
-    //   '/Users/thijs/Downloads/All Pokemon',
-    //   '/Users/thijs/Downloads/April',
-    //   '/Users/thijs/Downloads/DT+-+CRD+Objective+marker',
-    //   '/Users/thijs/Downloads/Marko - Sol Justicar',
-    //   '/Users/thijs/Downloads/Mechs',
-    //   '/Users/thijs/Downloads/Vulpeana Whitebranch',
-    //   '/Users/thijs/Downloads/Lazy+Grid+Clock',
-    //   '/Users/thijs/Downloads/Lazy+Grid+Clock (1)',
-    //   '/Users/thijs/Downloads/tools-modular-desktop-stand-tweezerplierscrewdriver-v-20-model_files',
-    //   '/Users/thijs/Dekstop/test.stl'
-    // ]
-
-    // dirs = [
-    //   'D:\\Desktop\\STL Temp\\[DO3D] Flash - Helmet - Justice League',
-    //   'D:\\Desktop\\STL Temp\\[DO3D] Joker - gun - Suicide Squad',
-    //   'D:\\Desktop\\STL Temp\\[DO3D] Subzero - Mask - Mortal Kombat',
-    //   'D:\\Desktop\\STL Temp\\[Exequiel Devoto] Batman-Sanity Diorama',
-    //   'D:\\Desktop\\STL Temp\\[Ghamak] Sci-Fi August 2020 (with support)',
-    //   'D:\\Desktop\\STL Temp\\[Kickstarter - War Scenery] Apocalypse Fortress',
-    //   'D:\\Desktop\\STL Temp\\[Patreon - Asgard Rising] April 2020',
-    //   'D:\\Desktop\\STL Temp\\[Patreon - Mini Flayer Miniatures] April 2020 Release',
-    //   'D:\\Desktop\\STL Temp\\[Patreon - Wyvern Tiles] Outdoors',
-    //   'D:\\Desktop\\STL Temp\\[3D Art Guy] Marilith Demon - April 2020',
-    //   'D:\\Desktop\\STL Temp\\[3DAlienWorlds] Necrontyr Arena Files',
-    //   'D:\\Desktop\\STL Temp\\[Black Scrolls Games] Treasure Pile with Column'
-    // ]
-    // dirs = [
-    // 'C:\\Torrent Temp\\3D Miniature Models - Mar 2020'
-    // ]
     this.conf = conf
-    // this.conf.scadExe = 'D:\\Downloads\\zip\\OpenSCAD-2019.05-x86-64\\openscad-2019.05\\openscad.exe'
-    // this.conf.scadExe = '/Applications/OpenSCAD.app'
 
     this.dirs = dirs
     this.bars = bars
@@ -55,6 +23,7 @@ class Process {
 
   initGen (files) {
     this.bars[1].setup(0, files.length, 1)
+
     return new Promise((resolve, reject) => {
       async.eachLimit(
         files,

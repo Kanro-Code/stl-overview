@@ -1,6 +1,6 @@
 {
   "name": "stl-overview",
-  "version": "0.0.4",
+  "version": "0.0.5",
   "description": "Stl Overview does just that, creates a image from a selected folder filled with Stls.",
   "main": "src/electron/index.js",
   "scripts": {
