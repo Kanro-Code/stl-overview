@@ -30,7 +30,6 @@ class ThreeD {
 	static getObjsFolder = function (dir, recur = true, objs) {
 		objs = objs || [];
 		const files = fs.readdirSync(dir, { withFileTypes: true });
-		console.log(files.length)
 
 		files.forEach(file => {
 			var currentFile = path.join(dir, file.name);
@@ -66,16 +65,16 @@ class ThreeD {
 		}
 	}
 
-	set location(location) {
+	set location (location) {
 		this._location = location;
 		this._size = null;
 	}
 
-	get location() {
+	get location () {
 		return this._location;
 	}
 
-	get size() {
+	get size () {
 		if (!this._size) {
 			this._size = fs.statSync(this.location).size;
 		}

@@ -2,8 +2,6 @@ const path = require('path')
 const fs = require('fs')
 const child = require('child_process')
 const os = require('os')
-const execa = require('execa')
-const { reject } = require('async')
 
 class Openscad {
   constructor (exe, flags) {
@@ -38,13 +36,16 @@ class Openscad {
     if (this.flags.viewall) { flags.push('--viewall') }
     if (this.flags.fullrender) { flags.push('--render') }
     if (this.flags.ortho) { flags.push('--projection=o') }
+
     return flags
   }
 
   static randomUnique (length = 8, prefix) {
-    const string = prefix + Math.random().toString(36).substr(2)
+    let string = prefix || ''
+    string += Math.random().toString(36).substr(2)
+
     if (string.length > length) {
-      return  string.substring(0, length)
+      return string.substring(0, length)
     } else {
       return Openscad.randomUnique(length, string)
     }
@@ -63,32 +64,33 @@ class Openscad {
 
     return importName
   }
-  
+
   generateImage (output = false, file, conf) {
     return new Promise((resolve, reject) => {
       if (!output) output = this.tempFile()
-      let threadOptions = { 
-        cwd: this.tempDir, 
-        timeout: 120000,
-        maxBuffer: 1024*1024 * 5,
-        stdio: 'ignore'
+      const threadOptions = {
+        cwd: this.tempDir,
+        timeout: 300000,
+        maxBuffer: 1024 * 1024 * 5
+        // stdio: 'ignore'
       }
-  
+
       const importFile = this.createImport(file.location)
       const flags = this.prepareFlags(importFile, output, conf)
-      
+
       try {
         const thread = child.spawn(this.exe, flags, threadOptions)
-        console.log(`Generating: ${path.parse(file.location).base}`)
-    
+        console.log(thread)
+
         thread.on('close', (code) => {
           if (code !== 0) {
-            reject(`child process exited with error code ${code} - during openscad generation`)
+            reject(new Error(`child process exited with error code ${code} - during openscad generation`))
           } else {
+            thread.kill()
             resolve(output)
           }
         })
-      } catch(e) {
+      } catch (e) {
         reject(e)
       }
     })
@@ -105,7 +107,7 @@ class Openscad {
   }
 
   tempFile (extension) {
-    let ext = extension || '.png'
+    const ext = extension || '.png'
     return path.join(this.tempDir, Openscad.randomUnique(16) + ext)
   }
 

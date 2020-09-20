@@ -5,7 +5,7 @@ const Stitch = require('../lib/stitch')
 const async = require('async')
 
 class Process {
-  constructor (conf, dirs, window) {
+  constructor (conf, dirs, bars) {
     // dirs = [
     //   '/Users/thijs/Downloads/All Pokemon',
     //   '/Users/thijs/Downloads/April',
@@ -37,11 +37,11 @@ class Process {
     // 'C:\\Torrent Temp\\3D Miniature Models - Mar 2020'
     // ]
     this.conf = conf
-    // this.conf.scadExe = 'D:\\Downloads\\zip\\OpenSCAD-2019.05-x86-64\\openscad-2019.05\\openscad.exe'
+    this.conf.scadExe = 'D:\\Downloads\\zip\\OpenSCAD-2019.05-x86-64\\openscad-2019.05\\openscad.exe'
     // this.conf.scadExe = '/Applications/OpenSCAD.app'
 
     this.dirs = dirs
-    this.window = window
+    this.bars = bars
 
     const imgW = Math.floor(
       this.conf.process.outputW / this.conf.process.columns
@@ -53,45 +53,29 @@ class Process {
     this.scad = new Openscad(this.conf.scadExe, this.conf.scad)
   }
 
-  executeGen (file) {
-    file.generateImage(null, this.scad, this.conf.scad)
-      .then(() => {
-        callback()
-      })
-  }
-
   initGen (files) {
+    this.bars[1].setup(0, files.length, 1)
     return new Promise((resolve, reject) => {
       async.eachLimit(
-        files, 
+        files,
         this.conf.process.maxProcess,
         async (file) => {
           await file.generateImage(null, this.scad, this.conf.scad)
+          this.bars[1].add()
         }
       ).then(() => {
+        this.bars[1].finish()
         resolve()
+      }).catch(e => {
+        if (e) reject(e)
       })
-      .catch(e => {
-        if (e) throw e
-      })
-      // async.forEachOfLimit(
-      //   files,
-      //   this.conf.process.maxProcess,
-      //   this.executeGen.bind({
-      //     scad: this.scad,
-      //     conf: this.conf
-      //   }),
-      //   (err) => {
-      //     if (err) reject(err)
-      //     resolve()
-      //   })
     })
   }
 
   trimFiles (files) {
-    let imgsMax = this.conf.process.imgsMax
+    const imgsMax = this.conf.process.imgsMax
     if (this.conf.process.imgsMax !== 0) {
-      let toBeCut = ((files.length - imgsMax) <= 0) ? 0 : files.length - imgsMax
+      const toBeCut = ((files.length - imgsMax) <= 0) ? 0 : files.length - imgsMax
       files.splice(imgsMax, toBeCut)
       return files
     } else {
@@ -129,11 +113,19 @@ class Process {
   }
 
   async start () {
+    this.bars[0].setup(0, this.dirs.length, 1)
     for (let i = 0; i < this.dirs.length; i++) {
+      this.bars[2].setup(0, 1, 0)
       const threeds = await this.generateScad(this.dirs[i])
+      this.bars[1].add()
+      this.bars[2].add()
       await this.stitch(threeds, this.dirs[i])
+      this.bars[2].finish()
+      this.bars[0].add()
+
     }
-    console.log("EVERYTHING WENT FINE AND HAS COMPLETED")
+    this.bars[0].finish()
+    console.log('EVERYTHING WENT FINE AND HAS COMPLETED')
     this.cleanup()
   }
 
@@ -158,7 +150,7 @@ class Process {
     }
   }
 
-  cleanup() {
+  cleanup () {
     this.scad.clearTempDir()
   }
 }

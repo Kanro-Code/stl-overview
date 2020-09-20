@@ -19,14 +19,14 @@ const dialogOptions = {
     { name: 'Custom File Type', extensions: ['stl'] },
     { name: 'All Files', extensions: ['*'] }]
 }
-const removeDirClick = function (e) {
+const removeDirClick = (e) => {
   const item = e.srcElement.parentNode
   removeDir(item.value)
   const p = item.parentNode.parentNode
   p.parentNode.removeChild(p)
 }
 
-const removeDir = function (dir) {
+const removeDir = (dir) => {
   for (var i = currentFiles.length - 1; i >= 0; i--) {
     if (currentFiles[i] === dir) {
       currentFiles.splice(i, 1)
@@ -35,7 +35,7 @@ const removeDir = function (dir) {
   }
 }
 
-const sizeDenom = function (number) {
+const sizeDenom = (number) => {
   const denom = ['kB', 'MB', 'GB']
   for (let index = 0; index < 4; index++) {
     number = number / 1024
@@ -62,7 +62,7 @@ const appendMeta = async function (listItem, dir) {
   }
 }
 
-const newDir = function (dir) {
+const newDir = (dir) => {
   const list = document.querySelector('.f-list')
 
   // append to list
@@ -81,7 +81,7 @@ const newDir = function (dir) {
   appendMeta(listItem, dir)
 }
 
-const checkDirs = function (dirs) {
+const checkDirs = (dirs) => {
   if (!dirs) return false
 
   dirs.forEach(dir => {
@@ -92,7 +92,7 @@ const checkDirs = function (dirs) {
   })
 }
 
-const prepDrop = function () {
+const prepDrop = () => {
   const dropzone = document.querySelector('#drag')
 
   dropzone.addEventListener('drop', (e) => {
@@ -133,7 +133,7 @@ const prepDrop = function () {
   })
 }
 
-const prepOpenscad = function () {
+const prepOpenscad = () => {
   // Add link to openscad website
   document.querySelector('#openscad').addEventListener('click', () => {
     shell.openExternal('https://www.openscad.org/downloads.html')
@@ -163,7 +163,7 @@ const prepOpenscad = function () {
   })
 }
 
-const prepColor = function () {
+const prepColor = () => {
   document.querySelector('#colorschemeselect')
     .addEventListener('change', (e) => {
       const image = document.querySelector('#colorschemepreview')
@@ -171,7 +171,7 @@ const prepColor = function () {
     })
 }
 
-const prepOutput = function () {
+const prepOutput = () => {
   document
     .querySelector('#outputLocation')
     .addEventListener('click', (e) => {
@@ -206,15 +206,14 @@ const prepOutput = function () {
     .querySelector('#outputLocationAbsolute')
     .addEventListener('input', e => {
       document.querySelector('#outputLoc2').checked = true
-
     })
 }
 
-const pullValueId = function (id) {
+const pullValueId = (id) => {
   return document.querySelector('#' + id).value
 }
 
-const pullValueRadio = function (name) {
+const pullValueRadio = (name) => {
   var el = document.getElementsByName(name)
 
   for (var i = 0, length = el.length; i < length; i++) {
@@ -222,11 +221,11 @@ const pullValueRadio = function (name) {
   }
 }
 
-const pullValueCheck = function (id) {
+const pullValueCheck = (id) => {
   return document.querySelector('#' + id).checked
 }
 
-const pullSettings = function () {
+const pullSettings = () => {
   const conf = {
     scadExe: pullValueId('openscad-exe'),
     scad: {
@@ -258,26 +257,68 @@ const pullSettings = function () {
   return conf
 }
 
-const prepProgress = function () {
-  const el = document.querySelector('#progress')
+class ProgressBar {
+  constructor (id) {
+    this.el = document.querySelector(id)
+    this.elMeta = this.el.parentElement.parentElement.querySelector('.meta')
+  }
 
-  return el
+  async setup (min, max, current) {
+    this.min = min
+    this.max = max
+    this.current = current
+    this.el.classList.remove('bg-success')
+    this.update()
+  }
+
+  async update () {
+    let per = this.current / this.max * 100
+    per = (per > 50) ? Math.ceil(per) : Math.floor(per)
+
+    this.el.style.width = `${per}%`
+    this.el.innerHTML = `${this.current}\\${this.max}`
+  }
+
+  async add (addition = 1) {
+    if (this.current < this.max) {
+      this.current += addition
+    }
+
+    this.update()
+  }
+
+  async finish () {
+    this.el.classList.add('bg-success')
+    this.current = this.max
+    this.meta = 'Current: Done'
+    this.update()
+  }
 }
 
-const prepGenerate = function () {
+const prepGenerate = () => {
   document.querySelector('#startGenerate')
     .addEventListener('click', () => {
       start()
     })
 }
 
-const start = function () {
+const start = () => {
+  if (currentFiles.length === 0) {
+    window.alert('Select files/folders before starting')
+    return
+  }
   const conf = pullSettings()
-  const process = new Process(conf, currentFiles, prepProgress())
+  const bars = [
+    new ProgressBar('#bar1'),
+    new ProgressBar('#bar2'),
+    new ProgressBar('#bar3')
+  ]
+
+  const process = new Process(conf, currentFiles, bars)
   process.start()
 }
 
-const prepareModal = function () {
+const prepareModal = () => { 
   const modal = document.querySelector('.modal')
   const body = document.querySelector('body')
 
@@ -294,7 +335,7 @@ const prepareModal = function () {
   // })
 }
 
-const ready = function () {
+const ready = () => {
   prepDrop()
   prepOpenscad()
   prepColor()
@@ -303,7 +344,7 @@ const ready = function () {
   prepareModal()
 }
 
-const customError = function (e, url, line) {
+const customError = (e, url, line) => {
   console.log(e, url, line)
   console.log(e.stack)
   // Check if error is already in progress, if so, append to current box
@@ -319,6 +360,6 @@ const customError = function (e, url, line) {
 
 document.addEventListener('DOMContentLoaded', ready)
 
-window.onerror = function (e, url, line) {
+window.onerror = (e, url, line) => {
   customError(e, url, line)
 }

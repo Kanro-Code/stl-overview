@@ -179,6 +179,9 @@ test('get randomUnique', () => {
 	let number = Openscad.randomUnique()
 	expect(number.length).toBe(8)
 
+	number = Openscad.randomUnique(32)
+	expect(number.includes('undefined')).toBeFalsy()
+
 })
 
 test('get tempfile', () => {
