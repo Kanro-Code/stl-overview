@@ -37,7 +37,7 @@ class Process {
     // 'C:\\Torrent Temp\\3D Miniature Models - Mar 2020'
     // ]
     this.conf = conf
-    this.conf.scadExe = 'D:\\Downloads\\zip\\OpenSCAD-2019.05-x86-64\\openscad-2019.05\\openscad.exe'
+    // this.conf.scadExe = 'D:\\Downloads\\zip\\OpenSCAD-2019.05-x86-64\\openscad-2019.05\\openscad.exe'
     // this.conf.scadExe = '/Applications/OpenSCAD.app'
 
     this.dirs = dirs

@@ -1,0 +1,4 @@
+BUGS:
+  -plenty
+SUGGESTIONS:
+  -Small QOL: might be nice to have a total count of models being generated. Now that you've made "Select Files" work correctly, it lists each model as "1 items found" and so I would have to count each listing (or open File Explorer) to get a proper sum of the models I'm rendering.
