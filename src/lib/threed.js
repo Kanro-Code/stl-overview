@@ -8,10 +8,8 @@ class ThreeD {
 
 	generateImage(output, scad, settings) {
 		return new Promise((resolve, reject) => {
-			if (settings.h === undefined) 
-				settings.h = 800;
-			if (settings.w === undefined) 
-				settings.w = 800;
+			if (!settings.h) settings.h = 800;
+			if (!settings.w) settings.w = 800;
 
 			scad.generateImage(output, this, settings)
 				.then((image) => {

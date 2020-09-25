@@ -32,39 +32,6 @@ class Stitch {
     return img
   }
 
-  calculateFont (height) {
-    const fonts = {
-      9: Jimp.FONT_SANS_8_BLACK,
-      14: Jimp.FONT_SANS_10_BLACK,
-      17: Jimp.FONT_SANS_12_BLACK,
-      18: Jimp.FONT_SANS_14_BLACK,
-      20: Jimp.FONT_SANS_16_BLACK,
-      36: Jimp.FONT_SANS_32_BLACK,
-      72: Jimp.FONT_SANS_64_BLACK,
-      143: Jimp.FONT_SANS_128_BLACK
-    }
-    const keys = Object.keys(fonts)
-
-    for (let i = keys.length; i > 0; i--) {
-      if (height > keys[i]) {
-        return fonts[keys[i]]
-      }
-    }
-
-    return false
-  }
-
-  getFont (height) {
-    return new Promise((resolve, reject) => {
-      const font = this.calculateFont(height)
-      if (!font) throw Error('Image is too small for text at the set height')
-      Jimp.loadFont(font)
-        .then(font => {
-          resolve(font)
-        }).catch(e => reject(e))
-    })
-  }
-
   calcSizes () {
     if (this.files.length > this.columns) {
       this.w = this.imgW * this.columns
@@ -76,28 +43,12 @@ class Stitch {
     ) * this.imgH
   }
 
-  async appendText (image, meta) {
-    meta = {
-      text: 'ThereIsAFileHere.stl'
-    }
-
-    image.print(
-      this.font,
-      0,
-      this.imgH * 0.95,
-      meta.text
-    )
-
-    return image
-  }
-
   compositeSingle (panel, file, key) {
     return new Promise((resolve, reject) => {
       const buffer = fs.readFileSync(file.image)
       Jimp.create(buffer)
         .then(image => {
           this.resizeAndZoom(image)
-          this.appendText(image)
           panel.composite(image, this.getXCoor(key), this.getYCoor(key))
           resolve(panel)
         })
@@ -108,6 +59,7 @@ class Stitch {
     for (let i = 0; i < this.files.length; i++) {
       await this.compositeSingle(panel, this.files[i], i)
     }
+    mkdirp.sync(path.parse(this.output).dir)
     panel.write(this.output)
   }
 
@@ -117,17 +69,8 @@ class Stitch {
 
   async init () {
     var panel = new Jimp(this.w, this.h, '#000000')
-
-    // Get right font size for rest of composition, 20% of height
-    const maxFontHeight = this.imgH * 0.05
-    console.log(maxFontHeight)
-    this.font = await this.getFont(maxFontHeight)
-
-    // Compose each file onto panel
     await this.compositeImages(panel)
 
-    // Write panel to disk
-    mkdirp.sync(path.parse(this.output).dir)
     await panel.write(this.output)
   }
 }
