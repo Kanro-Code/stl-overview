@@ -11,6 +11,7 @@ class Stitch {
     this.imgW = this.conf.scad.w
     this.columns = this.conf.process.columns
     this.output = output
+    this.metaEnabled = this.conf.metaEnabled
     this.calcSizes()
   }
 
@@ -24,10 +25,10 @@ class Stitch {
 
   resizeAndZoom (img) {
     img
-      .crop(img.bitmap.width * 0.125, // x crop start
-        img.bitmap.height * 0.125, // y crop start
-        img.bitmap.width * 0.75, // w total
-        img.bitmap.height * 0.75) // h total
+      .crop(img.bitmap.width * 0.150, // x crop start
+        img.bitmap.height * 0.150, // y crop start
+        img.bitmap.width * 0.700, // w total
+        img.bitmap.height * 0.700) // h total
       .resize(this.imgW, this.imgH, Jimp.RESIZE_BICUBIC)
     return img
   }
@@ -51,7 +52,8 @@ class Stitch {
       }
     }
 
-    return false
+    // Default to smallest available font
+    return fonts[0]
   }
 
   getFont (height) {
@@ -76,28 +78,62 @@ class Stitch {
     ) * this.imgH
   }
 
+  downsizeText (text, maxWidth) {
+    const width = Jimp.measureText(this.font, text)
+    if (width > maxWidth) {
+      const reduc = text.substring(0, text.length - 1) + ''
+      return this.downsizeText(reduc, maxWidth)
+    } else {
+      return text
+    }
+  }
+
   async appendText (image, meta) {
     meta = {
-      text: 'ThereIsAFileHere.stl'
+      text: 'Alain_base_75mm.stl'
     }
 
-    image.print(
+    const bgXOffset = 0.02 * image.bitmap.width
+    const bgWidth = image.bitmap.width - bgXOffset * 2
+    const bgHeight = this.textHeight + (0.08 * image.bitmap.height)
+    const bg = new Jimp(bgWidth, bgHeight, '#679EEB')
+
+    const text = this.downsizeText(meta.text, bgWidth * 0.9)
+    const textHeight = Jimp.measureTextHeight(this.font, text, 1000)
+    const textYOffset = (bgHeight - textHeight) / 2
+    const textXOffset = (bgWidth - Jimp.measureText(this.font, text)) / 2
+
+    console.log(text, textYOffset, bgHeight, textHeight)
+
+    bg.print(
       this.font,
-      0,
-      this.imgH * 0.95,
-      meta.text
+      textXOffset,
+      textYOffset,
+      text
+    )
+
+    image.composite(bg,
+      bgXOffset,
+      image.bitmap.height - bgHeight - bgXOffset
+      , {
+        mode: Jimp.BLEND_SOURCE_OVER,
+        opacitySource: 0.8,
+        opacityDest: 1
+      }
     )
 
     return image
   }
 
-  compositeSingle (panel, file, key) {
+  compositeSingle (panel, file, key, font) {
     return new Promise((resolve, reject) => {
       const buffer = fs.readFileSync(file.image)
       Jimp.create(buffer)
         .then(image => {
           this.resizeAndZoom(image)
-          this.appendText(image)
+          if (this.metaEnabled) {
+            this.appendText(image)
+          }
           panel.composite(image, this.getXCoor(key), this.getYCoor(key))
           resolve(panel)
         })
@@ -117,11 +153,10 @@ class Stitch {
 
   async init () {
     var panel = new Jimp(this.w, this.h, '#000000')
-
+    const textHeight = this.imgH * 0.1
+    this.textHeight = textHeight
+    this.font = await this.getFont(textHeight)
     // Get right font size for rest of composition, 20% of height
-    const maxFontHeight = this.imgH * 0.05
-    console.log(maxFontHeight)
-    this.font = await this.getFont(maxFontHeight)
 
     // Compose each file onto panel
     await this.compositeImages(panel)
