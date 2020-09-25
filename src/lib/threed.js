@@ -8,8 +8,10 @@ class ThreeD {
 
 	generateImage(output, scad, settings) {
 		return new Promise((resolve, reject) => {
-			if (!settings.h) settings.h = 800;
-			if (!settings.w) settings.w = 800;
+			if (settings.h === undefined) 
+				settings.h = 800;
+			if (settings.w === undefined) 
+				settings.w = 800;
 
 			scad.generateImage(output, this, settings)
 				.then((image) => {
@@ -21,10 +23,12 @@ class ThreeD {
 
 	static getChildInstance = function(file) {
 		let Stl = require('./threed-stl.js');
-		if (Stl.isStl(file)) return new Stl(file);
+		if (Stl.isStl(file)) 
+			return new Stl(file)
 
 		let Obj = require('./threed-obj.js');
-		if (Obj.isObj(file)) return new Obj(file);
+		if (Obj.isObj(file)) 
+			return new Obj(file)
 	}
 
 	static getObjsFolder = function (dir, recur = true, objs) {
