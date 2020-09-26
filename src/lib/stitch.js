@@ -80,13 +80,20 @@ class Stitch {
   }
 
   downsizeText (text, maxWidth) {
-    const width = Jimp.measureText(this.font, text)
-    if (width > maxWidth) {
-      const reduc = text.substring(0, text.length - 1) + ''
-      return this.downsizeText(reduc, maxWidth)
-    } else {
-      return text
+    for (let i = 0; i < text.length; i++) {
+      if (Jimp.measureText(this.font, text) < maxWidth) {
+        return text
+      } else {
+        text = text.substring(0, text.length - 3) + '..'
+        console.log(text)
+      }
     }
+    // if (width > maxWidth) {
+    //   const 
+    //   return this.downsizeText(reduc, maxWidth)
+    // } else {
+    //   return text
+    // }
   }
 
   appendText (image, file) {
@@ -99,7 +106,8 @@ class Stitch {
     const border = new Jimp(bgWidth - strokeW * 2, bgHeight - strokeW * 2, this.metaBg)
     bg.composite(border, strokeW, strokeW)
 
-    const textFile = path.parse(file.location).base
+    let textFile = path.parse(file.location).base
+    textFile = this.downsizeText(textFile, bg.bitmap.width * 0.9)
 
     const opt = {
       text: textFile,
@@ -107,7 +115,7 @@ class Stitch {
       alignmentY: Jimp.VERTICAL_ALIGN_MIDDLE
     }
 
-    bg.print(this.font, 0, 0, opt, bgWidth * 0.95, bgHeight * 0.95)
+    bg.print(this.font, 0, 0, opt, bgWidth, bgHeight)
 
     image.composite(bg,
       bgXOffset,
