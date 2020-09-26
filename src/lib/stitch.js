@@ -88,12 +88,8 @@ class Stitch {
         console.log(text)
       }
     }
-    // if (width > maxWidth) {
-    //   const 
-    //   return this.downsizeText(reduc, maxWidth)
-    // } else {
-    //   return text
-    // }
+
+    return ''
   }
 
   appendText (image, file) {
