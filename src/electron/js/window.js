@@ -257,7 +257,8 @@ const pullSettings = () => {
       absolute: pullValueId('outputLocationAbsolute'),
       relative: pullValueId('outputLocationRelative'),
       outputLoc1: document.querySelector('#outputLoc1').checked,
-      outputLoc2: document.querySelector('#outputLoc2').checked
+      outputLoc2: document.querySelector('#outputLoc2').checked,
+      metaEnabled: pullValueId('metaEnabled')
     }
   }
 

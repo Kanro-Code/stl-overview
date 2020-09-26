@@ -67,7 +67,6 @@ test('get objects in folders and subfolders', () => {
 	expect(objs.length).toBe(6)
 
 	let location = path.join(folder, 'empty')
-	console.log(location)
 	objs = ThreeD.getObjsFolder(location, false)
 	expect(objs.length).toBe(0)
 

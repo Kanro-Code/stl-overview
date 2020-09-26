@@ -9,9 +9,9 @@ class ThreeD {
 	generateImage(output, scad, settings) {
 		return new Promise((resolve, reject) => {
 			if (settings.h === undefined) 
-				settings.h = 800;
+				settings.h = 800
 			if (settings.w === undefined) 
-				settings.w = 800;
+				settings.w = 800
 
 			scad.generateImage(output, this, settings)
 				.then((image) => {
@@ -50,27 +50,30 @@ class ThreeD {
 
 	static getObjs = function (dir, recur = true, sortedBy) {
 		let stats = fs.statSync(dir)
-
+		let objs = []
 		if (stats.isDirectory()) {
-			let objs = this.getObjsFolder(dir, recur)
-
-			if (sortedBy === 'size') {
-				objs.sort((a,b) => { return b.size - a.size })
-			} else if(sortedBy === 'random') {
-				// https://stackoverflow.com/questions/2450954/how-to-randomize-shuffle-a-javascript-array
-				for (let i = objs.length - 1; i > 0; i--) {
-					const j = Math.floor(Math.random() * (i + 1))
-					[objs[i], objs[j]] = [objs[j], objs[i]]
-				}
-			}
-			
-			return objs
+			objs = this.getObjsFolder(dir, recur)
 		} else if (stats.isFile()) {
-			let obj = this.getChildInstance(dir)
-			return (obj) ? [obj] : false;
-		} else {
-			return false
+			const obj = this.getChildInstance(dir)
+			if (obj)
+				objs.push(obj)
 		}
+
+		if (sortedBy === 'size') {
+			objs.sort((a,b) => { return b.size - a.size })
+		} else if(sortedBy === 'random') {
+			// https://stackoverflow.com/questions/2450954/how-to-randomize-shuffle-a-javascript-array
+			for (let i = objs.length - 1; i > 0; i--) {
+				const j = Math.floor(Math.random() * (i + 1))
+				[objs[i], objs[j]] = [objs[j], objs[i]]
+			}
+		}
+
+		objs = objs.map(e => 
+			Object.assign(e, { relative: dir })
+		)
+
+		return objs
 	}
 
 	set location (location) {

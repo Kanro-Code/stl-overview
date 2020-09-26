@@ -147,20 +147,32 @@
 				<div class="form-group">
 					<label><b>Color Scheme</b></label>
 					<select id="colorschemeselect" class="form-control" size="10">
-			<option value="Cornfield" selected>Cornfield (default)</option>
-			<option value="Metallic">Metallic</option>
-			<option value="Sunset">Sunset</option>
-			<option value="Starnight">Starnight</option>
-			<option value="BeforeDawn">Before Dawn</option>
-			<option value="Nature">Nature</option>
-			<option value="DeepOcean">DeepOcean</option>
-			<option value="Solarized">Solarized</option>
-			<option value="Tomorrow">Tomorrow</option>
-			<option value="Tomorrow Night">Tomorrow Night</option>
-			</select>
+						<option value="Cornfield" selected>Cornfield (default)</option>
+						<option value="Metallic">Metallic</option>
+						<option value="Sunset">Sunset</option>
+						<option value="Starnight">Starnight</option>
+						<option value="BeforeDawn">Before Dawn</option>
+						<option value="Nature">Nature</option>
+						<option value="DeepOcean">DeepOcean</option>
+						<option value="Solarized">Solarized</option>
+						<option value="Tomorrow">Tomorrow</option>
+						<option value="Tomorrow Night">Tomorrow Night</option>
+						</select>
 				</div>
 				<div class="colorscheme-preview">
 					<img id="colorschemepreview" src="img/colorscheme/Cornfield.png">
+				</div>
+				<hr>
+
+				<div class="form-group">
+					<label for="perspective1"><b>Print Object Name under image</b></label>
+					<div class="form-check">
+						<input class="form-check-input" type="checkbox" id="metaEnabled" checked>
+						<label class="form-check-label" for="metaEnabled">
+							Enable (default)
+						</label>
+						<small class="form-text text-muted"></small>
+					</div>
 				</div>
 
 				<hr>
@@ -239,12 +251,12 @@
 				<hr>
 				<!-- Autocenter/view entire object -->
 				<div class="form-group">
-					<label for="perspective1"><b>Auto Center 3D bject</b></label>
+					<label for="perspective1"><b>Auto Center 3D object</b></label>
 					<div class="form-check">
 						<input class="form-check-input" type="checkbox" id="imgAutoCenter" checked>
 						<label class="form-check-label" for="autocenter">
-				Enable (default)
-			</label>
+							Enable (default)
+						</label>
 						<small class="form-text text-muted">Openscad will translate the camera to display the front the the model (hopefully, depending on how the original author exported the 3D object this will most likely fail).</small>
 					</div>
 				</div>

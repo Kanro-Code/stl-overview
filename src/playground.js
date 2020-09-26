@@ -9,9 +9,11 @@ const { fstat, fstatSync } = require('fs')
 
 // let image = './electron/img/colorscheme/BeforeDawn.png'
 const stl = new ThreeD('D:\\Downloads\\3d-print\\3d-print\\LEO_the_little_fishing_boat_visual_benchy\\files\\leo.stl')
-const scad = new Openscad('C:\\Program Files\\OpenSCAD\\Openscad.exe', { colorscheme: 'Starnight' })
-const imgH = 80
+const scad = new Openscad('C:\\Program Files\\OpenSCAD\\Openscad.exe', { colorscheme: 'Cornfield' })
+const imgH = 300
 const imgW = imgH
+
+let stls = ThreeD.getObjs('Z:\\torrent\\stl\\[Black Scrolls Games] HHShark Man HQ')
 
 const test = async function () {
   const output = path.join(__dirname, 'test.png')
@@ -24,11 +26,16 @@ const test = async function () {
     process: {
       columns: 4
     },
-    metaEnabled: true
+    misc: {
+      metaEnabled: true
+    }
   }
 
-  await stl.generateImage(output, scad, { h: imgH, w: imgW })
-  const stitch = new Stitch([stl, stl, stl, stl], stitchOutput, conf)
+  for (let i = 0; i < stls.length; i++) {
+    await stls[i].generateImage(null, scad, { h: imgH, w: imgW })
+  }
+
+  const stitch = new Stitch(stls, stitchOutput, conf)
   stitch.init()
 }
 
@@ -47,13 +54,13 @@ test()
 
 // getDirectories()
 
-let text = fs.readFileSync('D:\\Desktop\\outputsNEW\\text.txt').toString()
-let arr = []
+// let text = fs.readFileSync('D:\\Desktop\\outputsNEW\\text.txt').toString()
+// let arr = []
 
-for (let i = 0; i < text.length; i++) {
-  if (!arr.includes(text[i])) {
-    arr.push(text[i])
-  }
-}
-fs.writeFileSync('D:\\Desktop\\outputsNEW\\chars.txt', arr.toString())
-console.log(arr)
+// for (let i = 0; i < text.length; i++) {
+//   if (!arr.includes(text[i])) {
+//     arr.push(text[i])
+//   }
+// }
+// fs.writeFileSync('D:\\Desktop\\outputsNEW\\chars.txt', arr.toString())
+// console.log(arr)

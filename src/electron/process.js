@@ -45,7 +45,6 @@ class Process {
     const imgsMax = this.conf.process.imgsMax
     if (this.conf.process.imgsMax !== 0) {
       const toBeCut = ((files.length - imgsMax) <= 0) ? 0 : files.length - imgsMax
-      console.log(files)
       files.splice(imgsMax, toBeCut)
       return files
     } else {

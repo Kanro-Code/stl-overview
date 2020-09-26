@@ -11,7 +11,8 @@ class Stitch {
     this.imgW = this.conf.scad.w
     this.columns = this.conf.process.columns
     this.output = output
-    this.metaEnabled = this.conf.metaEnabled
+    this.metaEnabled = this.conf.misc.metaEnabled
+    this.metaBg = this.conf.metaBg || '#ffffff'
     this.calcSizes()
   }
 
@@ -53,7 +54,7 @@ class Stitch {
     }
 
     // Default to smallest available font
-    return fonts[0]
+    return fonts[Object.keys(fonts)[0]]
   }
 
   getFont (height) {
@@ -88,29 +89,25 @@ class Stitch {
     }
   }
 
-  async appendText (image, meta) {
-    meta = {
-      text: 'Alain_base_75mm.stl'
-    }
-
+  appendText (image, file) {
     const bgXOffset = 0.02 * image.bitmap.width
     const bgWidth = image.bitmap.width - bgXOffset * 2
-    const bgHeight = this.textHeight + (0.08 * image.bitmap.height)
-    const bg = new Jimp(bgWidth, bgHeight, '#679EEB')
+    const bgHeight = this.textHeight + (0.03 * image.bitmap.height)
+    const strokeW = Math.ceil(bgWidth / 450)
 
-    const text = this.downsizeText(meta.text, bgWidth * 0.9)
-    const textHeight = Jimp.measureTextHeight(this.font, text, 1000)
-    const textYOffset = (bgHeight - textHeight) / 2
-    const textXOffset = (bgWidth - Jimp.measureText(this.font, text)) / 2
+    const bg = new Jimp(bgWidth, bgHeight, '#000000')
+    const border = new Jimp(bgWidth - strokeW * 2, bgHeight - strokeW * 2, this.metaBg)
+    bg.composite(border, strokeW, strokeW)
 
-    console.log(text, textYOffset, bgHeight, textHeight)
+    const textFile = path.parse(file.location).base
 
-    bg.print(
-      this.font,
-      textXOffset,
-      textYOffset,
-      text
-    )
+    const opt = {
+      text: textFile,
+      alignmentX: Jimp.HORIZONTAL_ALIGN_CENTER,
+      alignmentY: Jimp.VERTICAL_ALIGN_MIDDLE
+    }
+
+    bg.print(this.font, 0, 0, opt, bgWidth * 0.95, bgHeight * 0.95)
 
     image.composite(bg,
       bgXOffset,
@@ -132,7 +129,7 @@ class Stitch {
         .then(image => {
           this.resizeAndZoom(image)
           if (this.metaEnabled) {
-            this.appendText(image)
+            this.appendText(image, file)
           }
           panel.composite(image, this.getXCoor(key), this.getYCoor(key))
           resolve(panel)
@@ -142,9 +139,9 @@ class Stitch {
 
   async compositeImages (panel) {
     for (let i = 0; i < this.files.length; i++) {
+      console.log(this.files[i].image)
       await this.compositeSingle(panel, this.files[i], i)
     }
-    panel.write(this.output)
   }
 
   deleteExisting (output) {
