@@ -145,6 +145,21 @@ const prepDrop = () => {
   })
 }
 
+const validateExe = (exe) => {
+  const scad = new Openscad(exe)
+
+  var label = document.querySelector('#openscad-exe')
+  label.value = exe
+
+  if (scad.validateExe()) {
+    label.classList.add('is-valid')
+    label.classList.remove('is-invalid')
+  } else {
+    label.classList.add('is-invalid')
+    label.classList.remove('is-valid')
+  }
+}
+
 const prepOpenscad = () => {
   // Add link to openscad website
   document.querySelector('#openscad').addEventListener('click', () => {
@@ -159,19 +174,7 @@ const prepOpenscad = () => {
     })
 
     if (!output) return
-
-    var label = document.querySelector('#openscad-exe')
-    label.value = output
-
-    const scad = new Openscad(output[0])
-
-    if (scad.validateExe()) {
-      label.classList.add('is-valid')
-      label.classList.remove('is-invalid')
-    } else {
-      label.classList.add('is-invalid')
-      label.classList.remove('is-valid')
-    }
+    validateExe(output[0])
   })
 }
 
@@ -359,6 +362,7 @@ const loadPreviousSettings = () => {
 
     if (settings.scadExe) {
       document.querySelector('#openscad-exe').value = settings.scadExe
+      validateExe(settings.scadExe)
     }
     if (settings.misc.absolute) {
       document.querySelector('#outputLocationAbsolute').value = settings.misc.absolute
