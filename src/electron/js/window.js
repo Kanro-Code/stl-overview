@@ -1,9 +1,12 @@
-const { dialog, shell } = require('electron').remote
+const { dialog, shell, app } = require('electron').remote
 
 const ThreeD = require('../lib/threed')
 const Openscad = require('../lib/openscad')
 const Process = require('./process')
 const fs = require('fs')
+const path = require('path')
+
+const saveLocation = path.join(app.getPath('appData'), 'stl-overview', 'previous-session.json')
 
 const currentFiles = []
 
@@ -318,16 +321,15 @@ const prepGenerate = () => {
     })
 }
 
+
 const start = () => {
   if (currentFiles.length === 0) {
     window.alert('Select files/folders before starting')
     return
   }
   const conf = pullSettings()
-  const json = JSON.stringify(conf)
-  fs.writeFile('./previous-session.json', json, (err) => {
-    if (err) throw err
-  })
+  saveSettings(conf)
+
   const bars = [
     new ProgressBar('#bar1'),
     new ProgressBar('#bar2'),
@@ -351,8 +353,8 @@ const prepareModal = () => {
 }
 
 const loadPreviousSettings = () => {
-  if (fs.existsSync('./previous-session.json')) {
-    let settings = fs.readFileSync('./previous-session.json')
+  if (fs.existsSync(saveLocation)) {
+    let settings = fs.readFileSync(saveLocation)
     settings = JSON.parse(settings)
 
     if (settings.scadExe) {
@@ -371,6 +373,13 @@ const loadPreviousSettings = () => {
       document.querySelector('#outputLoc2').checked = true
     }
   }
+}
+
+const saveSettings = (conf) => {
+  const json = JSON.stringify(conf)
+  fs.writeFile(saveLocation, json, (err) => {
+    if (err) throw err
+  })
 }
 
 const ready = () => {

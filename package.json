@@ -1,7 +1,7 @@
 {
   "name": "stl-overview",
-  "version": "0.0.5",
-  "description": "Stl Overview does just that, creates a image from a selected folder filled with Stls.",
+  "version": "0.0.6",
+  "description": "Stl Overview does just that, creates a image from a bunch of stls to give a great overview of what models you have.",
   "main": "src/electron/index.js",
   "scripts": {
     "test": "jest",
@@ -9,7 +9,7 @@
     "pack": "electron-builder --dir",
     "dist": "electron-builder"
   },
-  "author": "",
+  "author": "Kanro-Code",
   "license": "ISC",
   "dependencies": {
     "async": "^3.2.0",
@@ -24,8 +24,27 @@
   },
   "build": {
     "appId": "com.electron.stl-overview",
+    "icon": "dev/simple-icon.ico",
     "mac": {
-      "category": "public.app-category.graphics-design"
+      "category": "public.app-category.graphics-design",
+      "target": [
+        {
+          "target": "dmg",
+          "arch": "x64"
+        }
+      ]
+    },
+    "win": {
+      "target": [
+        {
+          "target": "portable",
+          "arch": "x64"
+        },
+        {
+          "target": "nsis-web",
+          "arch": "x64"
+        }
+      ]
     }
   },
   "standard": {
