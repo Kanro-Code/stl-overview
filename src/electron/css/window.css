@@ -251,3 +251,7 @@ hr {
 .progress {
 	background-color: #263238
 }
+
+.hidden {
+	display: none
+}

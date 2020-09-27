@@ -5,16 +5,38 @@ const Openscad = require('../lib/openscad')
 const Process = require('./process')
 const fs = require('fs')
 const path = require('path')
+const { removeListener } = require('cluster')
 
 const saveLocation = path.join(app.getPath('appData'), 'stl-overview', 'previous-session.json')
 
 const currentFiles = []
 
 const removeDirClick = (e) => {
+  console.log(e)
   const item = e.srcElement.parentNode
   removeDir(item.value)
   const p = item.parentNode.parentNode
   p.parentNode.removeChild(p)
+}
+
+const clearAllButton = () => {
+  const b = document.querySelector('#drop-clear')
+  if (currentFiles.length === 0) {
+    b.classList.add('hidden')
+  } else {
+    b.classList.remove('hidden')
+  }
+}
+
+const prepClearAll = () => {
+  document.querySelector('#drop-clear').addEventListener('click', () => {
+    const buttons = document.querySelectorAll('.remDir')
+    console.log(buttons)
+    for (let i = 0; i < buttons.length; i++) {
+      buttons[i].click()
+    }
+  })
+  clearAllButton()
 }
 
 const removeDir = (dir) => {
@@ -24,6 +46,8 @@ const removeDir = (dir) => {
       break
     }
   }
+
+  clearAllButton()
 }
 
 const sizeDenom = (number) => {
@@ -60,7 +84,7 @@ const newDir = (dir) => {
   const listItem = document.createElement('listItem')
   listItem.classList.add('list-group-item')
   listItem.innerHTML = `<span class="float-right f-delete">
-    <button type="button" class="close" onclick="removeDirClick(event)" value="${dir}"><span aria-hidden="true" >&times;</span></button>
+    <button type="button" class="close" onclick="removeDirClick(event)" value="${dir}"><span aria-hidden="true" class="remDir">&times;</span></button>
     </span>
     <p class="path">${dir}</p>
     <p class="f-meta">...</p>`
@@ -70,6 +94,7 @@ const newDir = (dir) => {
   // </button>
   list.appendChild(listItem)
   appendMeta(listItem, dir)
+  clearAllButton()
 }
 
 const checkDirs = (dirs) => {
@@ -324,7 +349,6 @@ const prepGenerate = () => {
     })
 }
 
-
 const start = () => {
   if (currentFiles.length === 0) {
     window.alert('Select files/folders before starting')
@@ -394,6 +418,7 @@ const ready = () => {
   prepGenerate()
   prepareModal()
   loadPreviousSettings()
+  prepClearAll()
 }
 
 const customError = (e, url, line) => {
