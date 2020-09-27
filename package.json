@@ -24,8 +24,9 @@
   },
   "build": {
     "appId": "com.electron.stl-overview",
-    "icon": "dev/simple-icon.ico",
+    "productName": "Stl Overview",
     "mac": {
+      "icon": "dev/simple-icon.icns",
       "category": "public.app-category.graphics-design",
       "target": [
         {
@@ -35,6 +36,7 @@
       ]
     },
     "win": {
+      "icon": "dev/simple-icon.ico",
       "target": [
         {
           "target": "portable",
