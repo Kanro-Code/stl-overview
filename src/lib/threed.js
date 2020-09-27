@@ -1,6 +1,7 @@
 const path = require('path');
 const fs = require('fs');
 
+
 class ThreeD {
 	constructor(location) {
 		this.location = location;
@@ -48,6 +49,20 @@ class ThreeD {
 		return objs
 	}
 
+	static sortObjs(objs, sortedBy) {
+		if (sortedBy === 'size') {
+			objs.sort((a,b) => { return b.size - a.size })
+		} else if(sortedBy === 'random') {
+			// https://stackoverflow.com/questions/2450954/how-to-randomize-shuffle-a-javascript-array
+			for (let i = objs.length - 1; i > 0; i--) {
+				const j = Math.floor(Math.random() * (i + 1))
+				[objs[i], objs[j]] = [objs[j], objs[i]]
+			}
+		}
+
+		return objs
+	}
+
 	static getObjs = function (dir, recur = true, sortedBy) {
 		let stats = fs.statSync(dir)
 		let objs = []
@@ -59,15 +74,7 @@ class ThreeD {
 				objs.push(obj)
 		}
 
-		if (sortedBy === 'size') {
-			objs.sort((a,b) => { return b.size - a.size })
-		} else if(sortedBy === 'random') {
-			// https://stackoverflow.com/questions/2450954/how-to-randomize-shuffle-a-javascript-array
-			for (let i = objs.length - 1; i > 0; i--) {
-				const j = Math.floor(Math.random() * (i + 1))
-				[objs[i], objs[j]] = [objs[j], objs[i]]
-			}
-		}
+		this.sortObjs(objs, sortedBy)
 
 		objs = objs.map(e => 
 			Object.assign(e, { relative: dir })

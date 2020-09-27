@@ -80,12 +80,11 @@ class Stitch {
   }
 
   downsizeText (text, maxWidth) {
-    for (let i = 0; i < text.length; i++) {
+    for (let i = text.length; i > 0; i--) {
       if (Jimp.measureText(this.font, text) < maxWidth) {
         return text
       } else {
-        text = text.substring(0, text.length - 3) + '..'
-        console.log(text)
+        text = text.substring(0, text.length - 4) + '...'
       }
     }
 
@@ -103,7 +102,7 @@ class Stitch {
     bg.composite(border, strokeW, strokeW)
 
     let textFile = path.parse(file.location).base
-    textFile = this.downsizeText(textFile, bg.bitmap.width * 0.9)
+    textFile = this.downsizeText(textFile, bgWidth * 0.9)
 
     const opt = {
       text: textFile,
@@ -143,7 +142,6 @@ class Stitch {
 
   async compositeImages (panel) {
     for (let i = 0; i < this.files.length; i++) {
-      console.log(this.files[i].image)
       await this.compositeSingle(panel, this.files[i], i)
     }
   }

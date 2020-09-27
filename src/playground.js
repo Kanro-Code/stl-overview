@@ -13,7 +13,8 @@ const scad = new Openscad('C:\\Program Files\\OpenSCAD\\Openscad.exe', { colorsc
 const imgH = 300
 const imgW = imgH
 
-let stls = ThreeD.getObjs('Z:\\torrent\\stl\\[Black Scrolls Games] HHShark Man HQ')
+// let stls = ThreeD.getObjs('Z:\\torrent\\stl\\[Black Scrolls Games] HHShark Man HQ')
+let stls = ThreeD.getObjs('D:\\Downloads\\3d-print\\#3DBenchy+-+The+jolly+3D+printing+torture-test+by+CreativeTools.se (1)')
 
 const test = async function () {
   const output = path.join(__dirname, 'test.png')
@@ -40,27 +41,3 @@ const test = async function () {
 }
 
 test()
-
-// var getDirectories = function (src, callback) {
-//   glob(src + '/**/*', callback);
-// }
-// getDirectories('Z:\\torrent\\stl', function (err, res) {
-//   if (err) {
-//     console.log('Error', err)
-//   } else {
-//     fs.writeFileSync('D:\\Desktop\\outputsNEW\\text.txt', res.toString())
-//   }
-// })
-
-// getDirectories()
-
-// let text = fs.readFileSync('D:\\Desktop\\outputsNEW\\text.txt').toString()
-// let arr = []
-
-// for (let i = 0; i < text.length; i++) {
-//   if (!arr.includes(text[i])) {
-//     arr.push(text[i])
-//   }
-// }
-// fs.writeFileSync('D:\\Desktop\\outputsNEW\\chars.txt', arr.toString())
-// console.log(arr)
