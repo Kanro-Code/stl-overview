@@ -44,8 +44,6 @@
 				</p>
 				<p style="color: white; padding: 1em; line-height: 1.2em;">
 					Missing features/known bugs:<br> 
-					- Sometimes the generation of the images just halts (5+ minutes) and doesn't proceed - if this happens you should restart the program and start over. I am working hard on fixing this one issue but it's a fairly hard one to track down.<br> 
-					- No way to cancel/stop process<br> 
 					- Able to restart process mid-progress<br> 
 					- No input validation -> You can crash this program if you input invalid settings<br> 
 					- Most importantly: no proper crash or error handling
@@ -126,7 +124,7 @@
 
 				<div class="form-group">
 					<label><b>Output Width in Pixels</b></label>
-					<input type="text" class="form-control" value="1200" id="outputW">
+					<input type="number" class="form-control" value="1200" id="outputW">
 				</div>
 				<!-- Preview -->
 				<div class="preview-output-container">
@@ -135,14 +133,14 @@
 
 				<div class="form-group">
 					<label><b>Number of 3D objects per column</b></label>
-					<input type="text" class="form-control" placeholder="4" value="4" id="stitchColumns">
+					<input type="number" class="form-control" placeholder="4" value="4" id="stitchColumns">
 					<small class="form-text text-muted">If a folder has less than the set number it will automatically adjust based on your preference.</small>
 				</div>
 
 				<!-- Max number -->
 				<div class="form-group">
 					<label><b>Maximum number of 3D objects</b></label>
-					<input type="text" class="form-control" value="16" id="imgsMax">
+					<input type="number" class="form-control" value="16" id="imgsMax">
 					<small class="form-text text-muted">Set to 0 for no limit. </small>
 				</div>
 
@@ -331,7 +329,7 @@
 
 			<div class="text-container" id="progress">
 				<h2 class="p-title">5. Start Process</h2>
-				<button type="button" class="btn btn-danger" id="startGenerate">Generate Images</button>
+				<button type="button" class="btn btn-danger" onclick="start(event)" id="startGenerate">Generate Images</button>
 				<hr>
 				<p id="temp"></p>
 				<div class="progress-bar-text">
@@ -347,7 +345,7 @@
 
 				<div class="progress-bar-text">
 					Generating images
-				</div>
+				</div>	
 				<div class="progress" style="height: 25px;">
 					<div class="progress-bar" style="width: 0%;" id="bar2">0/100</div>
 				</div>

@@ -150,19 +150,24 @@ class Stitch {
     fs.unlinkSync(output)
   }
 
-  async init () {
-    var panel = new Jimp(this.w, this.h, '#000000')
-    const textHeight = this.imgH * 0.1
-    this.textHeight = textHeight
-    this.font = await this.getFont(textHeight)
-    // Get right font size for rest of composition, 20% of height
-
-    // Compose each file onto panel
-    await this.compositeImages(panel)
-
-    // Write panel to disk
-    mkdirp.sync(path.parse(this.output).dir)
-    await panel.write(this.output)
+  init () {
+    return new Promise(async (resolve, reject) => {
+      var panel = new Jimp(this.w, this.h, '#000000')
+      const textHeight = this.imgH * 0.1
+      this.textHeight = textHeight
+      this.font = await this.getFont(textHeight)
+      // Get right font size for rest of composition, 20% of height
+  
+      // Compose each file onto panel
+      await this.compositeImages(panel)
+  
+      // Write panel to disk
+      mkdirp.sync(path.parse(this.output).dir)
+      panel.write(this.output, (err) => {
+        if (err) reject(err)
+        resolve()
+      })
+    })
   }
 }
 

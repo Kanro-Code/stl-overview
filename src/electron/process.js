@@ -78,9 +78,7 @@ class Process {
       this.outputLocation(dir),
       this.conf
     )
-    console.log(`Starting stitch ${dir}`)
     await process.init()
-    console.log(`Finished stitch ${dir}`)
   }
 
   async start () {

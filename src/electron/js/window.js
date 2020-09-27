@@ -342,18 +342,13 @@ class ProgressBar {
   }
 }
 
-const prepGenerate = () => {
-  document.querySelector('#startGenerate')
-    .addEventListener('click', () => {
-      start()
-    })
-}
-
-const start = () => {
-  if (currentFiles.length === 0) {
-    window.alert('Select files/folders before starting')
-    return
-  }
+const start = async (e) => {
+  const button = e.srcElement
+  console.log(button)
+  // if (currentFiles.length === 0) {
+  //   window.alert('Select files/folders before starting')
+  //   return
+  // }
   const conf = pullSettings()
   saveSettings(conf)
 
@@ -363,8 +358,14 @@ const start = () => {
     new ProgressBar('#bar3')
   ]
 
+  button.innerHTML = 'In Progress...'
+  button.classList.add('disabled')
   const process = new Process(conf, currentFiles, bars)
-  process.start()
+
+  await process.start()
+  console.log('hit')
+  button.innerHTML = 'Generate Images'
+  button.classList.remove('disabled')
 }
 
 const prepareModal = () => {
@@ -415,7 +416,6 @@ const ready = () => {
   prepOpenscad()
   prepColor()
   prepOutput()
-  prepGenerate()
   prepareModal()
   loadPreviousSettings()
   prepClearAll()
