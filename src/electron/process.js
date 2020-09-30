@@ -5,9 +5,13 @@ const Stitch = require('../lib/stitch')
 const async = require('async')
 
 class Process {
+  /**
+   * @param  {} conf
+   * @param  {} dirs
+   * @param  {} bars
+   */
   constructor (conf, dirs, bars) {
     this.conf = conf
-
     this.dirs = dirs
     this.bars = bars
 
@@ -20,6 +24,10 @@ class Process {
 
     this.scad = new Openscad(this.conf.scadExe, this.conf.scad)
   }
+
+  /**
+   * @param  {} files
+   */
 
   initGen (files) {
     this.bars[1].setup(0, files.length, 1)
@@ -41,6 +49,10 @@ class Process {
     })
   }
 
+  /**
+   * @param  {} files
+   */
+
   trimFiles (files) {
     const imgsMax = this.conf.process.imgsMax
     if (this.conf.process.imgsMax !== 0) {
@@ -51,6 +63,10 @@ class Process {
       return files
     }
   }
+
+  /**
+   * @param  {} dir
+   */
 
   getFilesAndTrim (dir) {
     console.log(dir, this.conf)
@@ -63,6 +79,10 @@ class Process {
     return this.trimFiles(files)
   }
 
+  /**
+   * @param  {} dir
+   */
+
   async generateScad (dir) {
     const files = this.getFilesAndTrim(dir)
 
@@ -72,6 +92,11 @@ class Process {
     return files
   }
 
+  /**
+   * @param  {} threeds
+   * @param  {} dir
+   */
+
   async stitch (threeds, dir) {
     const process = new Stitch(
       threeds,
@@ -80,6 +105,9 @@ class Process {
     )
     await process.init()
   }
+
+  /**
+   */
 
   async start () {
     this.bars[0].setup(0, this.dirs.length, 1)
@@ -91,16 +119,24 @@ class Process {
       await this.stitch(threeds, this.dirs[i])
       this.bars[2].finish()
       this.bars[0].add()
-
     }
+
     this.bars[0].finish()
     console.log('EVERYTHING WENT FINE AND HAS COMPLETED')
     this.cleanup()
   }
 
+  /**
+   * @param  {} dir
+   */
+
   outputName (dir) {
     return path.parse(dir).name + '.png'
   }
+
+  /**
+   * @param  {} dir
+   */
 
   outputFolder (dir) {
     const parse = path.parse(dir)
@@ -108,6 +144,10 @@ class Process {
     const folder = path.resolve(root, this.conf.process.outputLocation)
     return folder
   }
+
+  /**
+   * @param  {} dir
+   */
 
   outputLocation (dir) {
     const confLoc = this.conf.process.outputLocation
@@ -118,6 +158,9 @@ class Process {
       return path.join(folder, this.outputName(dir))
     }
   }
+
+  /**
+   */
 
   cleanup () {
     this.scad.clearTempDir()

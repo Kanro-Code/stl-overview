@@ -268,29 +268,23 @@ const pullValueCheck = (id) => {
 const pullSettings = () => {
   const conf = {
     scadExe: pullValueId('openscad-exe'),
-    scad: {
-      autocenter: pullValueCheck('imgAutoCenter'),
-      viewall: pullValueCheck('imgViewAll'),
-      fullrender: pullValueCheck('imgsFullRender'),
-      ortho: pullValueRadio('perspective') === 'ortho',
-      colorscheme: pullValueId('colorschemeselect')
-    },
-    process: {
-      recur: pullValueCheck('recursive'),
-      imgsMax: parseInt(pullValueId('imgsMax')),
-      imgsSortedBy: pullValueRadio('orderBy'),
-      outputW: parseInt(pullValueId('outputW')),
-      columns: parseInt(pullValueId('stitchColumns')),
-      createSinglePreview: pullValueCheck('imgsKeepPreview'),
-      maxProcess: parseInt(pullValueId('maxProcess'))
-    },
-    misc: {
-      absolute: pullValueId('outputLocationAbsolute'),
-      relative: pullValueId('outputLocationRelative'),
-      outputLoc1: document.querySelector('#outputLoc1').checked,
-      outputLoc2: document.querySelector('#outputLoc2').checked,
-      metaEnabled: pullValueId('metaEnabled')
-    }
+    autocenter: pullValueCheck('imgAutoCenter'),
+    viewall: pullValueCheck('imgViewAll'),
+    fullrender: pullValueCheck('imgsFullRender'),
+    ortho: pullValueRadio('perspective') === 'ortho',
+    colorscheme: pullValueId('colorschemeselect'),
+    recur: pullValueCheck('recursive'),
+    imgsMax: parseInt(pullValueId('imgsMax')),
+    imgsSortedBy: pullValueRadio('orderBy'),
+    outputW: parseInt(pullValueId('outputW')),
+    columns: parseInt(pullValueId('stitchColumns')),
+    createSinglePreview: pullValueCheck('imgsKeepPreview'),
+    maxProcess: parseInt(pullValueId('maxProcess')),
+    absolute: pullValueId('outputLocationAbsolute'),
+    relative: pullValueId('outputLocationRelative'),
+    outputLoc1: document.querySelector('#outputLoc1').checked,
+    outputLoc2: document.querySelector('#outputLoc2').checked,
+    metaEnabled: pullValueId('metaEnabled')
   }
 
   if (pullValueRadio('outputLocation') === 'outputRelative') {
