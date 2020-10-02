@@ -17,27 +17,27 @@ const imgW = imgH
 let stls = ThreeD.getObjs('D:\\Downloads\\3d-print\\#3DBenchy+-+The+jolly+3D+printing+torture-test+by+CreativeTools.se (1)')
 
 const test = async function () {
-  const output = path.join(__dirname, 'test.png')
-  const stitchOutput = path.join(__dirname, 'stitch_test.png')
-  const conf = {
-    scad: {
-      h: imgH,
-      w: imgW
-    },
-    process: {
-      columns: 4
-    },
-    misc: {
-      metaEnabled: true
-    }
-  }
+	const output = path.join(__dirname, 'test.png')
+	const stitchOutput = path.join(__dirname, 'stitch_test.png')
+	const conf = {
+		scad: {
+			h: imgH,
+			w: imgW
+		},
+		process: {
+			columns: 4
+		},
+		misc: {
+			metaEnabled: true
+		}
+	}
 
-  for (let i = 0; i < stls.length; i++) {
-    await stls[i].generateImage(null, scad, { h: imgH, w: imgW })
-  }
+	for (let i = 0; i < stls.length; i++) {
+		await stls[i].generateImage(null, scad, { h: imgH, w: imgW })
+	}
 
-  const stitch = new Stitch(stls, stitchOutput, conf)
-  stitch.init()
+	const stitch = new Stitch(stls, stitchOutput, conf)
+	stitch.init()
 }
 
 test()
