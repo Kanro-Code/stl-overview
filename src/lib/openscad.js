@@ -49,14 +49,14 @@ class Openscad {
 	 * @param {string} importFile - path of file where the import command resides for a single 3d object
 	 * @param {string} output - location exported image
 	 * @param {Object} conf - configuration for exported image
-	 * @param {number} conf.w - width exported image
-	 * @param {number} conf.h - height exported image
+	 * @param {number} conf.imgW - width exported image
+	 * @param {number} conf.imgH - height exported image
 	 * @returns {string[]} - returns flags prepared for using in a shell together with openscad executable
 	 */
 	prepareFlags (importFile, output, conf) {
 		const flags = [
 			`-o${output}`, // no space after -o, bug in openscad 2019/2020
-			`--imgsize=${conf.w},${conf.h}`,
+			`--imgsize=${conf.imgW},${conf.imgH}`,
 			`--colorscheme=${this.flags.colorscheme}`,
 			importFile
 		]
@@ -77,7 +77,7 @@ class Openscad {
 	 * @returns {string} - Path to importfile location, stored in a temporary file, see tempDir method
 	 */
 	createImport (location) {
-		const importName = this.randomString(12)
+		const importName = Openscad.randomString(12)
 		const importFile = path.join(this.tempDir, importName)
 
 		// Create important command, making sure path is posix compatible
@@ -95,8 +95,8 @@ class Openscad {
 	 * a OS dependent temporary folder
 	 * @param  {Object ThreeD} threed - the instance for the 3d object which must contain a valid location
 	 * @param {Object} conf - configuration for exported image
-	 * @param {number} conf.w - width exported image
-	 * @param {number} conf.h - height exported image
+	 * @param {number} conf.imgW - width exported image
+	 * @param {number} conf.imgH - height exported image
 	 * @returns {Promise<string>} A promise that resolves into path location for the generated image
 	 */
 	generateImage (output = false, threed, conf) {
